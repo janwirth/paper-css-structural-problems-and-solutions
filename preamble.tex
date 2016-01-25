@@ -1,0 +1,236 @@
+% Hinweis: Optionen der Dokumentenklasse werden an alle folgenden \usepackage{package} Befehle weitergegeben
+\documentclass[
+	fontsize=12pt,
+	paper=a4,
+	parskip=half,
+	twoside=false,
+	numbers=noenddot,	% Kein Punkt am Ende einer Überschrift
+	draft=false,			% Deckt Schwächen auf: overfull und full boxes werden markiert; Bilder werden nicht geladen
+	bibliography=totoc,	% Literaturverzeichnis ins Inhaltsverzeichnis aufnehmen
+	listof=totoc,		% Tabellen- und Abbildungsverzeichnis ins Inhaltsverzeichnis aufnehmen
+	titlepage=true,		% Separate Titelseite; Gestaltung mit Hilfe der Titlepage-Umgebung
+	% headsepline=true,	% Kopflinie aktivieren
+	% footsepline=true,	% Fußlinie aktivieren
+	abstracton			% Abstract aktivieren
+]{scrreprt}
+
+% Zeichenkodierung Ausgabe ist T1-Kodierung: Wichtig für die Ausgabe von Umlauten
+\usepackage[T1]{fontenc}
+
+% Schrift festlegen
+\usepackage{fontspec}
+
+\setmainfont[
+	BoldFont=Arialb.ttf,
+	ItalicFont=Ariali.ttf,
+	BoldItalicFont=Arialbi.ttf
+]{Arial.ttf}
+
+\usepackage{titlesec}
+\renewcommand{\sectfont}{\rmfamily}
+% Sprachauswahl für Lokalisierungen und Silbentrennung
+\usepackage[english]{babel}
+
+% Zitate: Anführungszeichen automatisch anhand der Sprache wählen
+\usepackage[babel=true]{csquotes}
+
+% Source-Code-Listings
+% \usepackage{listings}
+% \lstset{
+% 	language=SQL,
+% 	basicstyle=\ttfamily
+% } 
+
+% BibTeX-Symbol
+\usepackage{texnames}
+
+%Farbpaket laden
+\usepackage{xcolor}
+
+% Symbole, z.B. Haken
+\usepackage{pifont}
+
+% Zeilen in Tabellen zusammenfassen
+\usepackage{multirow}
+
+% Spalten in Tabellen zusammenfassen
+\usepackage{multicol}
+
+% Silbentrennung kann bei bestimmten Wörten mit Hilfe von diesem Paket deaktiviert werden 
+\usepackage{hyphenat}
+
+% Abkürzungsverzeichnis
+\usepackage[printonlyused, withpage]{acronym}
+
+\usepackage{caption}
+\DeclareCaptionFormat{custom}{
+	\itshape#1#2#3
+}
+\DeclareCaptionFont{mdit}{\mdseries\itshape}
+\captionsetup[table]{
+	format=custom,
+	labelsep=newline,
+	justification=centering,
+	font=small,
+	labelfont=mdit,
+	belowskip=12pt,
+	aboveskip=18pt,
+}
+\usepackage{floatrow}
+\floatsetup[table]{capposition=top}
+
+% Tiefe des Inhaltsverzeichnisses
+\setcounter{tocdepth}{2}
+
+% Punkte im Inhaltsverzeichnis
+\usepackage{tocstyle}
+\usetocstyle{allwithdot}
+
+% Zum Einbinden von PDF-Dateien.
+\usepackage{pdfpages}
+
+% Paket zum Anpassen von Kopf- und Fußzeilen
+\usepackage[automark]{scrpage2}
+% \setlength{\headheight}{1.1\baselineskip}
+% Liniendicke
+% \setheadsepline{0.1pt}
+% \setfootsepline{0.1pt}
+
+% Kopf- und Fusszeile löschen
+\clearscrheadfoot
+% Kopf- und Fusszeile aktivieren
+\pagestyle{scrheadings}
+
+
+
+% Fuss links
+% \ifoot[\verfasser]{\verfasser}
+% Fuss rechts
+\ofoot[\pagemark]{\pagemark}
+
+% Grafiken einbinden
+\usepackage{graphicx}
+% Pfad zu den Grafiken
+\graphicspath{{resources/}}
+
+% Seitenränder setzen
+\usepackage[left=4cm, right=2cm, top=3cm, bottom=2cm, footskip=1cm]{geometry}
+\renewcommand*\chapterheadstartvskip{\vspace*{0cm}}
+
+% Zeilenabstand auf 1.5 setzen
+\usepackage{setspace}
+\onehalfspacing
+
+% Literaturverzeichnis
+\usepackage[backend=bibtex,style=verbose-ibid]{biblatex}
+\bibliography{Literature.bib}
+\renewcommand{\bibname}{Literaturverzeichnis}
+%Referenz zu URLs
+\usepackage{url}
+
+% Glossar
+\usepackage[acronym,toc,nonumberlist]{glossaries}
+\makeglossaries
+% Format Glossary
+\usepackage{mfirstuc}
+\renewcommand*{\glsgroupskip}{}
+\renewglossarystyle{listdotted}{%
+	\renewcommand*{\glossentry}[2]{
+	\item[\glsentryitem{##1}] \glossentryname{##1} \dotfill \glossentrydesc{##1}
+	}
+}
+\setglossarystyle{listdotted}
+\makeglossaries
+
+% Titel als Referenzierung verwenden
+\usepackage{titleref}
+\usepackage{cleveref}
+
+% Währungen
+\usepackage{textcomp}
+
+% Fussnoten fortlaufend nummerieren.
+\usepackage{chngcntr}
+\counterwithout{footnote}{chapter}
+
+% Persönliche Daten
+\newcommand{\titel}{A qualitative comparison of Atomic CSS, SUIT CSS and OOCSS}
+\newcommand{\art}{Term paper of the third academic year}
+\newcommand{\studienbereich}{Wirtschaft}
+\newcommand{\studiengang}{Onlinemedien}
+\newcommand{\verfasser}{Jan Wirth}
+\newcommand{\kurs}{ON13}
+\newcommand{\ausbildungsbetrieb}{visual4 GmbH}
+\newcommand{\betreuer}{Prof. Dr. Arnulf Mester}
+\newcommand{\abgabedatum}{}
+\newcommand{\unterschrift}{\rule{5cm}{0.2pt}}
+
+% Links- und PDF-Einstellungen
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+	pdfauthor = {\verfasser},
+	pdftitle = {\titel},
+	pdfsubject = {\art},
+	pdfkeywords = {},
+	pdfstartview = {Fit},
+	colorlinks = {false},
+	breaklinks = {true},
+	bookmarksopen = {true}
+}
+
+% Verhinderung von Schusterjunge und Hurenkind
+\clubpenalty = 10000
+\widowpenalty = 10000
+\displaywidowpenalty = 10000
+
+% Seitenzäler für große, römische Zahlen
+\newcounter{RomanPagenumber}
+
+% suppress hbox warnings
+\hfuzz=5.002pt 
+
+% Abkürzungen
+\newcommand{\dash}{d.\,h. }
+\newcommand{\zB}{z.\,B. }
+\newcommand{\bzw}{\bzw. }
+\newcommand{\uU}{u.U. }
+
+
+% Zitate in neue Zeile rücken
+\usepackage{breakcites}
+
+% Symbole bzw. Dingbats
+\usepackage{amssymb}
+\usepackage{pifont}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{ \rmark }{\ding{118}}%
+
+\newcommand{\requiredMark}{\ding{108}}%
+\newcommand{\optionalMark}{\ding{109}}%
+
+% redefine textsc for arial
+\renewcommand{\textsc}[1]{\textit{#1}}
+
+% reduce hyphenation
+\pretolerance=2000
+\tolerance=3000 
+\emergencystretch=10pt
+\doublehyphendemerits=1000000
+
+% multiple footnotes in a row
+\usepackage[multiple]{footmisc}
+
+% add table padding
+\usepackage{array}
+\setlength\extrarowheight{2pt}
+
+
+% prevent page break on chapter
+\makeatletter
+\renewcommand\chapter{\par%
+  \thispagestyle{plain}%
+  \global\@topnum\z@
+  \@afterindentfalse
+  \secdef\@chapter\@schapter}
+\makeatother

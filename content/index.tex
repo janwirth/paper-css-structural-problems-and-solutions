@@ -1,0 +1,138 @@
+\chapter{Introduction}
+% history
+The search for effective and efficient methods to structure CSS Code dates back to 2003.\footnote{cf. \cite{methodmails}}
+In the recent years several different CSS Methodologies have been published.
+These include both new solutions as well as some that have evolved from others.\footnote{\cite{methodologyoverview}}
+% motivation
+Whereas there are several different methodologies available and some widely adopted and successfully implemented, information that compares them against each other is scarce.
+% aim
+The objective of this publication is to provide an informational baseline comparing individual methodologies.
+The target audience of this for developers and management involved in the decision-making process of the selection of a suitable CSS Methodology for a web frontend project.
+The methodologies Atomic CSS, SMACSS, Suit BEM, MPG, OOCSS and the edX CSS Style guide will be covered here.
+
+
+A complete set of these methods is referred to as a {\slshape methodology}.
+CSS methodologies deviate from the actual definition of software development methodologies as they tend to be less abstract.
+The CSS methodologies presented here dictate a certain structure for the source code instead of defining processes.
+However the creation of sections of the structured source code are considered processes here, which is why we stick with that term.
+In addition to structuring the process of CSS code creating the presentend methodologies usually provide styleguide of varied specificity.
+All methodologies are suitable to be embedded in frameworks, some methodologies are presented within the context of pattern libraries.
+
+
+%%%%%%%%%%%%
+These Methodologies usually covers naming conventions, categorization of rules with the aim of helping developers create both maintainable and scalable stylesheets.
+Software development methodologies aim to provide a structure to the development of software systems.
+Build tools like CSS Preprocessors solve similar problems.
+On one hand they also provide tools that may improve the speed of the development process with CSS methodologies.
+On the other hand they also have the potential to increase the complexity of concrete development workflows.
+
+\chapter{CSS Methodologies}
+Harrison and Coplien consider human communication as ``the bottleneck in software development''\footnote{\cite{coplien2004organizational} S.3}
+Like any other language developers are confronted with problems that have been solved before.
+The purpose of patterns is to provide proven and tested solutions to these problems.
+They ``capture hidden structure'', problem structures that may be solved intuitively, however the solution is not guaranteed to be proven and tested. \footnote{\cite{coplien2004organizational} S.3}
+
+Some of the caveats of CSS listed in the following are solved already or may be solved in the near future.
+As a language that is primarily interpreted by different web browsers, e.g. expectedly inconsistent environments, relying on these features may result in fragile code.
+CSS methodologies aim to resolve these caveats by promoting both 
+yandex: speed up development and development in teamobjectives
+
+
+
+\chapter{Criterea}
+In the development process of CSS code several problems must be coped with.
+These can be considered general issues that are manifested in a domain- and language-specific manner.
+To this date, while it is possible to scope \verb <style> -tags, the CSS scoping module level 1 is still in draft.\footnote{cf. \cite{cssscopingmodule}}\footnote{cf. \cite{styletag}}
+This means that the rules of a referenced stylesheet apply to any part of the DOM if selectors are matched.
+
+causes
+scope leaks
+specificity
+re-usability
+downsides
+DRY not  respected
+no singular representation of each informational entity: neither higher-language constructs nor variables\cite{caniusevariables} 
+Scalability
+    adding more pages:
+    adding more styles
+
+    maintainable: readable
+decoupling
+problems:
+file structure
+solved with patterns
+several solutions
+What is a pattern?
+methodologies provide patterns
+un-pattern: code and fix
+
+
+\chapter{Results}
+
+\chapter{Conclusions}
+
+
+
+
+
+
+
+
+
+\begin{itemize}
+    \item reusability: is it possible to avoid the duplication of information?
+    \item effectivity: do we have to break the rules to achieve a goal?
+    \item efficiency: How much code has to be written to achieve that goal?
+    \item scoping
+    \item specificity
+    \item naming
+    \item semantics: do class names relate to the content they apply to?
+\end{itemize}
+
+
+
+
+
+development process underpinns concrete processes with broader understanding
+utilises patterns
+
+
+bootstrap: framework code is atomic css, often non-semantic
+CSS normalize because industry standard
+preprocessors in usage, but not results
+provide unified output
+not: performance
+% observations
+\section{Summary}
+% 
+
+
+\chapter{Outro}
+conclusions
+outlook
+preprocessors
+
+% methods
+To measure the performance of individual methodologies, an interface, namely Google search, will be re-created.
+reasons: not overly complex, popular, 
+The source-code produced while adhering to the rules of the respective methodology will be evaluated using the following criterea:
+\begin{itemize}
+    \item semantics: do class names relate to the content they apply to?
+    \item reusability: is it possible to avoid the duplication of information?
+    \item effectivity: do we have to break the rules to achieve a goal?
+    \item efficiency: How much code has to be written to achieve that goal?
+\end{itemize}
+
+
+The individual methodologies dictate the usage of different 
+The way a rule selector is structured may impact render performance. 
+Because the differences between are fairly small, the impact is here considered insignificant and performance is not an evaluation criterium.\footnote{\cite{selectorperformance}}
+
+% crap??:
+This leaves to indicate that not all criterea measure conditions that affect end-users but all criterea affect developers.
+That means the results
+perspective:
+dev ergonomy \& performance
+%  
+
+% todo: create exact scales for individual criterea

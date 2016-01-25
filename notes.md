@@ -60,3 +60,7 @@ http://is.muni.cz/th/324836/fi_m/thesis.pdf
 readibility
 
 http://www.smashingmagazine.com/2014/07/bem-methodology-for-small-projects/
+
+http://www.jamesturneronline.net/beautifulweb/bemit-naming-convention.html
+BEM
+BEMIT

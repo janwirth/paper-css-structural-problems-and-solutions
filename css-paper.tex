@@ -1,0 +1,90 @@
+\input{preamble}
+
+\begin{document}
+	% Title page
+	\include{content/meta/titlepage}
+	
+	% Ab hier große, römische Seitenzahlen
+	\pagenumbering{Roman}
+	
+	%falls nicht der Titel der Arbeit oben stehen soll, bitte einkommentieren
+	%\ihead[\headmark]{\headmark}
+	
+	% Abstract
+	%\include{content/Abstract}
+	
+	% Contentssverzeichnis
+	\addcontentsline{toc}{chapter}{Contents}
+    \tableofcontents
+	\pagebreak
+	
+	% Abbildungsverzeichnis
+	%\listoffigures
+	%\pagebreak
+    
+    % Code Listing Verzeichnis
+    %\lstlistoflistings
+    %\pagebreak
+	
+	% Tabellenverzeichnis
+	\listoftables
+	\pagebreak
+
+	% Abkürzungsverzeichnis
+	%\addchap{List of Abbreviations}
+	\input{Abbreviations}
+	%\pagebreak
+	
+	% Abschnitt beenden
+	\clearpage
+	
+	% Seitenzähler erhält den Wert der aktuellen groß römisch nummerierten Seite; Zwischenspeichern für später
+	\setcounter{RomanPagenumber}{\value{page}}
+	
+	% Ab hier arabische Seitenzahlen
+	\pagenumbering{arabic}
+		
+	% Kopf links auf aktuelles Kapitel ändern
+	\ihead[\headmark]{\headmark}
+
+	
+    \input{content/index}
+
+	\clearpage
+	
+\addtocontents{toc}{\protect\newpage}
+	% Ab hier weiter mit großen, römischen Seitenzahlen
+	\pagenumbering{Roman}
+	
+	% Seitenzähler auf zwischengespeicherten Wert für große, römische Zahlen setzen
+	\setcounter{page}{\theRomanPagenumber}
+
+	% Kopf links auf Titel ändern
+	\ihead[\titel]{\titel}	
+	
+	% Anhang
+	\addchap{Anhang}
+	\appendix
+    \setcounter{table}{0}
+    \renewcommand{\thetable}{A\arabic{table}}
+	\input{content/meta/Anhang}
+	
+	% % Beigaben
+	\input{content/meta/Beigaben}
+	
+	% % Glossar, falls benötigt
+	% \input{content/meta/Glossar}
+	\printglossaries
+	% Literaturverzeichnis
+	\printbibliography
+	
+	% Aktuellen Abschnitt beenden
+	\clearpage
+
+	% Sperrvermerk
+	%\include{content/Sperrvermerk}
+	
+	% Eidesstattliche Erklärung
+	\include{content/meta/Erklaerung}
+	
+\end{document}
