@@ -11,40 +11,62 @@ The target audience of this for developers and management involved in the decisi
 The methodologies Atomic CSS, SMACSS, Suit BEM, MPG, OOCSS and the edX CSS Style guide will be covered here.
 
 
-A complete set of these methods is referred to as a {\slshape methodology}.
-CSS methodologies deviate from the actual definition of software development methodologies as they tend to be less abstract.
-The CSS methodologies presented here dictate a certain structure for the source code instead of defining processes.
-However the creation of sections of the structured source code are considered processes here, which is why we stick with that term.
-In addition to structuring the process of CSS code creating the presentend methodologies usually provide styleguide of varied specificity.
-All methodologies are suitable to be embedded in frameworks, some methodologies are presented within the context of pattern libraries.
 
 
 %%%%%%%%%%%%
-These Methodologies usually covers naming conventions, categorization of rules with the aim of helping developers create both maintainable and scalable stylesheets.
-Software development methodologies aim to provide a structure to the development of software systems.
-Build tools like CSS Preprocessors solve similar problems.
-On one hand they also provide tools that may improve the speed of the development process with CSS methodologies.
-On the other hand they also have the potential to increase the complexity of concrete development workflows.
+% These Methodologies usually covers naming conventions, categorization of rules with the aim of helping developers create both maintainable and scalable stylesheets.
+% Software development methodologies aim to provide a structure to the development of software systems.
+% Build tools like CSS Preprocessors solve similar problems.
+% On one hand they also provide tools that may improve the speed of the development process with CSS methodologies.
+% On the other hand they also have the potential to increase the complexity of concrete development workflows.
+% Some of the caveats of CSS listed in the following are solved already or may be solved in the near future.
+% As a language that is primarily interpreted by different web browsers, e.g. expectedly inconsistent environments, relying on these features may result in fragile code.
 
 \chapter{CSS Methodologies}
-Harrison and Coplien consider human communication as ``the bottleneck in software development''\footnote{\cite{coplien2004organizational} S.3}
+% definition
+CSS methodologies deviate from the actual definition of software development methodologies as they tend to also deal with problems on a more concrete level.
+This means they do not only provide a development process structure, but often define patterns and naming conventions.
+To provide consistency with established terminology `CSS methodology' defines what was just described for the context of this paper.
+
+% processes
+Some CSS methodologies provide guides for classifying CSS rules.
+Usually, this 
+
+
+% patterns
+Harrison and Coplien consider human communication as ``the bottleneck in software development''\footnote{\cite{coplienpatterns} S.3}
 Like any other language developers are confronted with problems that have been solved before.
 The purpose of patterns is to provide proven and tested solutions to these problems.
-They ``capture hidden structure'', problem structures that may be solved intuitively, however the solution is not guaranteed to be proven and tested. \footnote{\cite{coplien2004organizational} S.3}
+They ``capture hidden structure'', problem structures that may be solved intuitively, however the solution is not guaranteed to be proven and tested. \footnote{\cite{coplienpatterns} S.5}
+CSS methodologies provide pattterns  for both general and domain-specific caveats of CSS.
+% In addition to structuring the process of CSS code creating the presentend methodologies usually provide styleguide of varied specificity.
 
-Some of the caveats of CSS listed in the following are solved already or may be solved in the near future.
-As a language that is primarily interpreted by different web browsers, e.g. expectedly inconsistent environments, relying on these features may result in fragile code.
-CSS methodologies aim to resolve these caveats by promoting both 
+
+% \begin{itemize}
+%     \item processes
+%     \item patterns
+%     \item concrete styleguide
+% \end{itemize}
+
+% compatibility
+inter-methodology
+styleguides: more specific
+frameworks
+All methodologies are suitable to be embedded in frameworks, some methodologies are presented within the context of pattern libraries.
+BEM by Yandex or the edX pattern library are rather holistic frameworks for the development of web frontends that 
 yandex: speed up development and development in teamobjectives
 
 
 
 \chapter{Criterea}
-In the development process of CSS code several problems must be coped with.
-These can be considered general issues that are manifested in a domain- and language-specific manner.
+
+%  scoping
 To this date, while it is possible to scope \verb <style> -tags, the CSS scoping module level 1 is still in draft.\footnote{cf. \cite{cssscopingmodule}}\footnote{cf. \cite{styletag}}
 This means that the rules of a referenced stylesheet apply to any part of the DOM if selectors are matched.
 
+%  specificity
+
+%  informational duplication
 causes
 scope leaks
 specificity
