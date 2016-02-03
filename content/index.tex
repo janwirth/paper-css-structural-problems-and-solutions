@@ -1,160 +1,110 @@
-\chapter{Introduction}
-% history
-The search for effective and efficient methods to structure CSS Code dates back to 2003.\footnote{cf. \cite{methodmails}}
-In the recent years several different CSS Methodologies have been published.
-These include both new solutions as well as some that have evolved from others.\footnote{\cite{methodologyoverview}}
-% motivation
-Whereas there are several different methodologies available and some widely adopted and successfully implemented, information that compares them against each other is scarce.
-% aim
-The objective of this publication is to provide an informational baseline comparing individual methodologies.
-The target audience of this for developers and management involved in the decision-making process of the selection of a suitable CSS Methodology for a web frontend project.
-The methodologies Atomic CSS, SMACSS, Suit BEM, MPG, OOCSS and the edX CSS Style guide will be covered here.
+\include{content/intro}
+\chapter{Common Problems and Solutions}
+fix solutions to problem
+definition by patterns / anti patterns
+'so benutzt man das'
+- methodologies
+- 
+name und idee
+historie
+\section{Scope Leaks}
+CSS were created by the design Principle \gls{soc} with the intent to separate content and visual style.
+In contrast to inline styles and embedded stylesheets they are reusable across different \gls{html} documents.
+To this date, while some browsers support scoped \verb <style> -tags, the CSS scoping module level 1 is still in draft.\footnote{cf. \cite{cssscopingmodule}}\footnote{cf. \cite{styletag}}
+This means that the rules of a referenced stylesheet apply to any part of the DOM if selectors are matched and the rule is not overwritten or shadowed.
+When a stylesheet is viewed as a program that is executed with the \gls{dom} as context, the \gls{css}-rules may be viewed as impure functions executed in given order.
+shadowing = collision
+
+Similar to a program with impure functions, the modification of a stylesheet with of unscoped styles can have unforeseen side effects.
+For example, when a change is made to a selector or the associated properties with the intention to modify the visual appearance of a specific element of the \gls{dom}, the rule created or modified can apply to other elements aswell.
+This so called `scope leak'\footnote{cf. \cite{mpgcss}} can occur in any \gls{html}-Document that references this very stylesheet.
+When the developer undertaking the changes is not aware of all applications of a specific rule, some of the visual changes are considered unforeseen.
+The cascade and Specificity mechanism of \gls{css} adds some somplexity to possible side effects due to possible interactions between individual rules.
+The risk of unforeseen side effects in the development of generally unscoped \gls{css} is increased with the size of the codebase and the number of developers.
+This is due to the increased amount of knowledge required to foresee side effects. 
+However, global or 'base' styles are not inherently considered harmful.
+Their usage is suitable to provide representational consistency inside single aswell across multiple \gls{html} documents.\footnote{cf. \cite{mpgcss}}
+Scoping makes sense to create exceptions aswell as styling more complex structures isolated structures within the DOM.
+The effects of a change of scoped styles are easier to localize in comparison to unscoped styles.
+So when the intended visual effect of a specific rule is not global, it makes sense to scope it in order to possibly reduce cognitive load for developers.
+
+The aforementioned gls{w3c}-draft on CSS scoping defines a syntax that is similar to that of media queries.
+However, media queries no not operate based on the \gls{dom}-structure but are scoping styles based on various properties of the rendering device.\footnote{cf. \cite{mediaqueries}}
+Here it is possible to surround a set of rules with a selector that, if matched, limits these rules' scope to children of the matched element.
+\begin{verbatim}
+    @scope div {
+      span {
+        color: blue;
+      }
+    }
+\end{verbatim}
+In terms of limiting the visibility of rules this has the exact same effect as prefixing it with that selector.\footnote{cf. \cite{cssscopingmodule}}
+
+A selector chain with more than one selector scopes the rule by the first selector:
+\begin{verbatim}
+.sidebar span {
+    background: red;
+}
+.sidebar a {
+    color: blue;
+}
+\end{verbatim}
+\caption{The rules are scoped within the context of \verb sidebar elements}
+
+The usage of this technique is often observed to limit the scope of styles to a specific page.
+% rewrite: Chris Coyier introduced and Jeff Escalante recommends decorating the body tag of each \gls{html} document type of a project with an ID
+
+two ways of limiting scopes:
+classname prefixes vs selector prefixes
+
+
+similar effect
 
 
 
+dom is always involved
 
-%%%%%%%%%%%%
-% These Methodologies usually covers naming conventions, categorization of rules with the aim of helping developers create both maintainable and scalable stylesheets.
-% Software development methodologies aim to provide a structure to the development of software systems.
-% Build tools like CSS Preprocessors solve similar problems.
-% On one hand they also provide tools that may improve the speed of the development process with CSS methodologies.
-% On the other hand they also have the potential to increase the complexity of concrete development workflows.
-% Some of the caveats of CSS listed in the following are solved already or may be solved in the near future.
-% As a language that is primarily interpreted by different web browsers, e.g. expectedly inconsistent environments, relying on these features may result in fragile code.
-
-\chapter{CSS Methodologies}
-% definition
-CSS methodologies deviate from the actual definition of software development methodologies as they tend to also deal with problems on a more concrete level.
-This means they do not only provide a development process structure, but often define patterns and naming conventions.
-To provide consistency with established terminology `CSS methodology' defines what was just described for the context of this paper.
-
-% processes
-Some CSS methodologies provide guides for classifying CSS rules.
-Usually, this 
-
-
-% patterns
-Harrison and Coplien consider human communication as ``the bottleneck in software development''\footnote{\cite{coplienpatterns} S.3}
-Like any other language developers are confronted with problems that have been solved before.
-The purpose of patterns is to provide proven and tested solutions to these problems.
-They ``capture hidden structure'', problem structures that may be solved intuitively, however the solution is not guaranteed to be proven and tested. \footnote{\cite{coplienpatterns} S.5}
-CSS methodologies provide pattterns  for both general and domain-specific caveats of CSS.
-% In addition to structuring the process of CSS code creating the presentend methodologies usually provide styleguide of varied specificity.
-
-
-% \begin{itemize}
-%     \item processes
-%     \item patterns
-%     \item concrete styleguide
-% \end{itemize}
-
-% compatibility
-inter-methodology
-styleguides: more specific
-frameworks
-All methodologies are suitable to be embedded in frameworks, some methodologies are presented within the context of pattern libraries.
-BEM by Yandex or the edX pattern library are rather holistic frameworks for the development of web frontends that 
-yandex: speed up development and development in teamobjectives
+page scope: MPG CSS
+apply page name to body element
+write styles that
+Jeff: ignoring cascade: 
 
 
 
-\chapter{Criterea}
+Module Scope
 
-%  scoping
-To this date, while it is possible to scope \verb <style> -tags, the CSS scoping module level 1 is still in draft.\footnote{cf. \cite{cssscopingmodule}}\footnote{cf. \cite{styletag}}
-This means that the rules of a referenced stylesheet apply to any part of the DOM if selectors are matched.
+Scoping draft
+- overriding 
 
-%  specificity
-
-%  informational duplication
-causes
-scope leaks
-specificity
-re-usability
-downsides
-DRY not  respected
-no singular representation of each informational entity: neither higher-language constructs nor variables\cite{caniusevariables} 
-Scalability
-    adding more pages:
-    adding more styles
-
-    maintainable: readable
-decoupling
-problems:
-file structure
-solved with patterns
-several solutions
-What is a pattern?
-methodologies provide patterns
-un-pattern: code and fix
-
-
-\chapter{Results}
-
-\chapter{Conclusions}
+scope module
+shadowing
 
 
 
+\section{Duplication of Information}
 
+DRY Principle \footnote{cf. \cite{pragmatic}}
+low reusability
+- specificity
+- tight coupling with markup
 
+Modules / Components
+modifiers on components or elements
 
+high reusability
 
+balance between repeating 
 
+extreme decoupling and reusability: Atomic design
+downside: non-semantic
+good names don't change
+css-frameworks
 
-\begin{itemize}
-    \item reusability: is it possible to avoid the duplication of information?
-    \item effectivity: do we have to break the rules to achieve a goal?
-    \item efficiency: How much code has to be written to achieve that goal?
-    \item scoping
-    \item specificity
-    \item naming
-    \item semantics: do class names relate to the content they apply to?
-\end{itemize}
-
-
-
-
-
-development process underpinns concrete processes with broader understanding
-utilises patterns
-
-
-bootstrap: framework code is atomic css, often non-semantic
-CSS normalize because industry standard
-preprocessors in usage, but not results
-provide unified output
-not: performance
-% observations
-\section{Summary}
-% 
-
-
-\chapter{Outro}
-conclusions
-outlook
-preprocessors
-
-% methods
-To measure the performance of individual methodologies, an interface, namely Google search, will be re-created.
-reasons: not overly complex, popular, 
-The source-code produced while adhering to the rules of the respective methodology will be evaluated using the following criterea:
-\begin{itemize}
-    \item semantics: do class names relate to the content they apply to?
-    \item reusability: is it possible to avoid the duplication of information?
-    \item effectivity: do we have to break the rules to achieve a goal?
-    \item efficiency: How much code has to be written to achieve that goal?
-\end{itemize}
-
-
-The individual methodologies dictate the usage of different 
-The way a rule selector is structured may impact render performance. 
-Because the differences between are fairly small, the impact is here considered insignificant and performance is not an evaluation criterium.\footnote{\cite{selectorperformance}}
-
-% crap??:
-This leaves to indicate that not all criterea measure conditions that affect end-users but all criterea affect developers.
-That means the results
-perspective:
-dev ergonomy \& performance
-%  
-
-% todo: create exact scales for individual criterea
+\section{Tight Coupling with Markup}
+Some solutions apply or do not apply to specific programmaning styles and workflows
+% There are multiple difference between the scoping module and prefixing rule selectors with another selector.
+% However the biggest difference is absolute specifity, i.e. the cascade prioritize scoped styles.
+% The following section introduces multiple methods to scope \gls{css} rules.
+% All these methods work on information provided by the \gls{dom}.
+% There are two observed established techniques to utilise rules scoped with prefixes.
+% The most frequently observed usage of 
