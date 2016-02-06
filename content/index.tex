@@ -28,7 +28,7 @@ Scoping makes sense to create exceptions aswell as styling more complex structur
 The effects of a change of scoped styles are easier to localize in comparison to unscoped styles.
 So when the intended visual effect of a specific rule is not global, it makes sense to scope it in order to possibly reduce cognitive load for developers.
 
-The aforementioned gls{w3c}-draft on CSS scoping defines a syntax that is similar to that of media queries.
+The aforementioned \gls{w3c}-draft on CSS scoping defines a syntax that is similar to that of media queries.
 However, media queries no not operate based on the \gls{dom}-structure but are scoping styles based on various properties of the rendering device.\footnote{cf. \cite{mediaqueries}}
 Here it is possible to surround a set of rules with a selector that, if matched, limits these rules' scope to children of the matched element.
 \begin{verbatim}
@@ -49,41 +49,95 @@ A selector chain with more than one selector scopes the rule by the first select
     color: blue;
 }
 \end{verbatim}
-\caption{The rules are scoped within the context of \verb sidebar elements}
+\begin{figure}
+\caption{The rules are scoped within the context of sidebar elements}
+\end{figure}
 
 The usage of this technique is often observed to limit the scope of styles to a specific page.
-% rewrite: Chris Coyier introduced and Jeff Escalante recommends decorating the body tag of each \gls{html} document type of a project with an ID
+Coyier introduced and Escalante recommends decorating decorating the body tag of each \gls{html} document of a project with an ID.\footnote{cf. \cite{coyieridbody}}\footnote{cf. \cite{mpgcss}}
+The major use case for page or page-type specific styles is the creation of visual exceptions among all pages.
+Generally, page-specific styles may be used to define visual cues as visual orientation aids.
+A concrete example for this is a visual design specification that distinguishes the header of an article page through a an opaque background instead of being  a transparent layer over a darker image.
 
-two ways of limiting scopes:
-classname prefixes vs selector prefixes
+\begin{verbatim}
+header {
+    background: transparent;
+}
+#article header {
+    background: black;
+}
+\end{verbatim}
+
+Coyier also exemplifies the use of page-specific styles through highlighting the currently selected entry of the main menu without changing the markup of the latter.
+
+\begin{verbatim}
+
+// index.html
+
+<body id='about'>
+    <nav>
+        <ul>
+            <li class='nav-item home'>
+            <li class='nav-item about'>
+        ...
 
 
-similar effect
+// style.css
 
+nav li {}
 
+#about .nav-item.about {}
 
-dom is always involved
+\end{verbatim}
 
-page scope: MPG CSS
-apply page name to body element
-write styles that
-Jeff: ignoring cascade: 
+However this technique should be applied with caution.
+The markup and the styles in this example are coupled tightly and effectively violate the principle of \gls{soc}.
+Each navigation entry requires an additional rule to function correctly in the context of the user interface.
+Because this leads to bloat in \gls{css} code when the number of navigation entry is growing, a dynamic \gls{js} client- or server-side solution modifying the markup might be more when aiming for scalability.
 
+The self-entitled styling methodologies \gls{bem} and \gls{suit} share the concept of creating indivisble blocks in both \gls{html} and \gls{css} in an isolated manner.
+These blocks are referred to as `modules`\footnote{cf. \cite{bem}} or `components'\footnote{cf. \cite{suit}}.
+\gls{suit} is inspired by and may be viewed as being evolved from \gls{suit}.
+Both have very similar conventions for the construction of \gls{css} rule selectors and the related markup.
+The following example displays the construction of component and child-element selectors in \gls{suit}.
+snake/dash/camel case
 
+\begin{verbatim}
+.BlockName {}
 
-Module Scope
+.BlockName-descendantName {}
+\end{verbatim}
+Whereas the delimiters can be chosen freely in \gls{bem} the naming conventions are more specific for \gls{suit}.
+The reason for capitalising the root node selector is to avoid name collisions and thus expectedly better integration with existing code.\footnote{cf. \cite{bemvssuitquestion}}
+The example shows that the scoping here does not utilise the cascade but works through prefixing the actual class names.
+Descendent styles are applied to elements decorated with the classname \verb ComponentName-descendantName , regardless of their position in the \gls{dom}.
 
-Scoping draft
-- overriding 
+Escalante criticises this approach.
+Instead of leveraging the functionality of the cascade, \gls{bem} and \gls{suit} annul it to `replicate it [...] in a less efficient manner'.\footnote{\cite{mpgcss}}
+Inheriting the class name of the block root into the class name of a descendant causes repetitition and thus redundancy in the \gls{html}.\footnote{cf. \cite{mpgcss}}
+{\slshape Title CSS} leverages the cascade to create a scope.
+Through separating the block identifier as distinct class, repetition within the \gls{html}-markup is avoided:
 
-scope module
-shadowing
+\begin{verbatim}
+.BlockName {}
 
+.BlockName .descendantName{}
+\end{verbatim}
+Besides avoiding repetition, Cuthbert adds ease-of-writing as well as readability as rationales for {\slshape Title CSS} as naming convention.
+After presenting methods for avoiding scope leaks in \gls{css}, methods to avoid redundancy within \gls{css} files are presented in the following section.
+
+% performance
+% utility
+% - overriding 
+% shadowing
 
 
 \section{Duplication of Information}
 
-DRY Principle \footnote{cf. \cite{pragmatic}}
+respect to SOLID design principles\footnote{cf. \cite{solidcss}}
+sub-classes = re-usability through dry
+
+DRY Principle \footnote{cf. \cite{pragmaticprogrammer}}
 low reusability
 - specificity
 - tight coupling with markup
