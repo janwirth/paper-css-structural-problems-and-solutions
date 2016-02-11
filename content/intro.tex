@@ -1,13 +1,32 @@
 \chapter{Introduction}
-Präprozessoren als symptom
-zielgruppe: people that want are looking for solutions
-preprocessors are out of scope here
+The results of a poll on \gls{css} Preprocessors with 13 000 responses conducted in 2012 by online magazine CSS-Tricks display a significant preference of those who tried preprocessors towards them.\footnote{cf. \cite{preprocessorpoll}}
+The popularity of preprocessors can be considered as a symptom of insufficiency \gls{css} as a tool for modern web projects.
+Artifacts of the search for effective and efficient methods to structure \gls{css} Code dates back to 2003.\footnote{cf. \cite{methodmails}}
 
-nature of CSS
-given limitations
-issues
-solutions
+In the recent years several different practices and sets of practices have been promoted by widely recognized companies and individuals of the web development community.
+Among others, these include Yandex\footnote{cf. \cite{bem}}, Yahoo\footnote{cf. \cite{atomiccsssite}}.
+In defiance of the abundance of methods, resources that provide comparative information based on thorough examination is scarce.
+We will approach common problems in the development of \gls{css} caused by the features, quirks and shortcomings of the language.
+In the context of these problems we will examine methods promoted as solutions.
+The aim of this paper is to provide insight for frontend developers challenging best practices as well as a base for further research.
 
-Search for methodologies - intro citation
-approaching solutions by problem
-rendering speed not considered
+The focus lies on purely \gls{css} based solution.
+This means that the usage of preprocessors and minification are not within the scope of this paper.
+Also out of scope are:
+\begin{itemize}
+    \item {\normalfont \bfseries Rendering gerformance} due to probable insignificance in comparison to other issues discussed here.
+    \item {\normalfont \bfseries Readability} due to a lack of measures for \gls{css}-specific readability. 
+        Readability is not to be confused with complexity and issues arising from it which will be addressed in \autoref{sec:scopeleaks}.
+\end{itemize}
+% semantics: seo is not relevant
+% readability
+
+
+
+% out of scope
+% readability
+% state management
+% utilities 
+
+% terminology: imprecise
+% practices may not apply to all

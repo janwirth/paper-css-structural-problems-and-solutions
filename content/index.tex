@@ -9,75 +9,14 @@ definition by patterns / anti patterns
 name und idee
 historie
 
-\include{content/scopeleaks}
-
-\section{Violations of the \acrlong{dry} Principle}
-The \gls{dry} Principle was formulated in 2000 by Hunt and Thomas.
-It states that 
-`Every piece of knowledge must have a single, unambiguous, authoritative representation within a system.'\footnote{\cite{pragmaticprogrammer} p. 27}
-When we consider the following excerpt we can observe what is most likely a violation of \gls{dry}
-
-\begin{verbatim}
-button {
-    color: red;
-    padding: 5px;
-}
-
-a {
-    color: red;
-    text-decoration: none;
-}
-\end{verbatim}
-
-Assuming that the intention of the developer was to give both links and buttons an identical color, this piece of knowledge has two authoritative representations here.
-But it is possible that the red color may only be identical by coincidence, meaning that it different semantics within the context of either element.
-This implies that both definitions will not necessarily be change at the same time.
-However, if this is not the case, that repetition may cause additional cost during maintenance.
-This is because, if the inherently singular piece of knowledge changes, the code has to be changed in more that one place.
-Even automated tools like find and replace are prone to errors of their operators as the operation may require detailed knowledge of the target system.\footnote{cf. \cite{humanautomation} p.408}
-
-There are multiple options to eliminating the problem that has just been examined.
-Variables are, to this date, only fully supported by Firefox 31 and has been removed as an experimental feature in Google Chrome from version 33 to 34.\footnote{cf. \cite{cssvariables}}
-To eliminate the duplication constants are sufficient.
-Besides variables there are no native gls{css} means to emulate constants in their classical definition.
-
-All common \gls{css}-Preprocessors provide a variable feature.
-These variables are only variable during the actual processing and not at interpretation-time.
-Thus preprocessor variables are effectively constants.\footnote{cf. \cite{wirthpreprocessors} p.27}
-
-input systems and output system
-information size
-bandwidth for user
 
 
 
-no variables
-repeated within the markup
 
-respect to SOLID design principles\footnote{cf. \cite{solidcss}}
-sub-classes = re-usability through dry
-cascade
+\input{content/scopeleaks}
 
-DRY Principle \footnote{cf. \cite{pragmaticprogrammer}}
-low reusability
-- specificity
-- tight coupling with markup
+\input{content/dryviolations}
 
-Modules / Components
-modifiers on components or elements
-
-high reusability
-
-balance between repeating 
-
-extreme decoupling and reusability: Atomic design
-downside: non-semantic
-good names don't change
-css-frameworks
-
-DRY CSS: breaks code structure
-
-\section{Tight Coupling with Markup}
 Some solutions apply or do not apply to specific programmaning styles and workflows
 % There are multiple difference between the scoping module and prefixing rule selectors with another selector.
 % However the biggest difference is absolute specifity, i.e. the cascade prioritize scoped styles.

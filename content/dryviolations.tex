@@ -1,0 +1,106 @@
+\section{Violations of the \acrlong{dry} Principle}
+The \gls{dry} Principle was formulated in 2000 by Hunt and Thomas.
+It states that 
+`Every piece of knowledge must have a single, unambiguous, authoritative representation within a system.'\footnote{\cite{pragmaticprogrammer} p. 27}
+When we consider the following excerpt we can observe what is most likely a violation of \gls{dry}
+
+\begin{verbatim}
+button {
+    color: red;
+    padding: 5px;
+}
+
+a {
+    color: red;
+    text-decoration: none;
+}
+\end{verbatim}
+
+Assuming that the intention of the developer was to give both links and buttons an identical color, this piece of knowledge has two authoritative representations here.
+But it is possible that the red color may only be identical by coincidence, meaning that it different semantics within the context of either element.
+This implies that both definitions will not necessarily be change at the same time.
+However, if this is not the case, that repetition may cause additional cost during maintenance.
+This is because, if the inherently singular piece of knowledge changes, the code has to be changed in more that one place.
+Even automated tools like find and replace are prone to errors of their operators as the operation may require detailed knowledge of the target system.\footnote{cf. \cite{humanautomation} p.408}
+
+There are multiple options to eliminating the problem that has just been examined.
+Variables are, to this date, only fully supported by Firefox 31 and has been removed as an experimental feature in Google Chrome from version 33 to 34.\footnote{cf. \cite{cssvariables}}
+To eliminate the duplication constants are sufficient.
+Besides variables there are no native gls{css} means to emulate constants in their classical definition.
+
+All common \gls{css}-Preprocessors provide a variable feature.
+These variables are only variable during the actual processing and not at interpretation-time.
+Thus preprocessor variables are effectively constants.\footnote{cf. \cite{wirthpreprocessors} p.27}
+Using preprocessors allows eliminating repetition in the source code to some degree
+but the repetition will still be observable in the processed \gls{css}.
+Verou assumes that the usage of preprocessors may result in the developer `losing track of CSS filesize'.\footnote{cf. \cite{veroupreprocessors}}
+This potential may not be as big when using preprocessed variables, but bigger for other language features like mixins.
+% information size
+% bandwidth for user
+
+An approach to completely eliminate repetition in native \gls{css} code is Atomic \gls{css}, presentend in 2013 by Koblentz, frontend developer at Yahoo.
+It advocates splitting the \gls{css} source code in the smallest possible parts.
+This effectively decouples the \gls{css} from the structure of the \gls{html} document.
+Atomic \gls{css} rules represent a specific visual appearance.
+The class names of the individual rules are not semantic but representational.
+
+% approach by frameworks, high reusability
+
+\begin{verbatim}
+.Mend-small {
+    margin-left: 10px;
+}
+\end{verbatim}
+
+In contrast to block-based approaches like \gls{suit} and \gls{bem} Atomic CSS is no scoping and no nesting.
+Rules do not have a specific context and thus are highly reusable.\footnote{cf. \cite{atomiccssarticle}}
+There are multiple tradeoffs to the Atomic CSS approach:
+
+\begin{itemize}
+    \item {\normalfont \bfseries Additional classes in markup:} Visual attributes are grouped through class assignment rather than below a specific selector.
+        This means more classes need to be assigned to each element whose visual appearence deviates from default and base styles.
+        The resulting markup may be considered bloated.
+
+    \item {\normalfont \bfseries Non-semantic class names:} Because of the radical decoupling the \gls{css} rules are named by the visual attribute they yield. 
+        The lack of scoping possibly impedes the developer's ability to localize the effect of changes.
+
+    \item {\normalfont \bfseries Changing names and unused rules:} The W3C states that `Good names don't change'.\footnote{\cite{classsemantics}}
+        The Usage of class names that inherit attribute values are a violation of \gls{dry}. 
+        Replacing these attribute values with names like \verb small may eleminate the need to change class names when the actual attribute values change.
+\end{itemize}
+
+The development of the Atomic CSS approach has since been continued by Yahoo.
+Current versions do not involve direct editing of \gls{css}-files.
+The semantic hierarchy between class names and attributes is inversed.
+Class names define the actual style attributes.
+Atomizer, a build tool that extracts \gls{css} rules from the definitions in the markup is used to generate gls{css}-files.
+Atomizer supports the usage of variables.
+Whereas an overhead of unused rules in the \gls{css}-files is prevented by this approach, the markup is still studded with non-semantically named classes.\footnote{cf. \cite{atomiccsssite}}
+
+% vs inline styles
+% applying and de-applying classes, meaning of classes, logic has to be stored in module context
+Hower
+effectively a preprocessor
+Atomic Design by ??? 
+
+Modules / Components
+modifiers on components or elements
+balance between repeating 
+
+
+
+
+
+no variables
+repeated within the markup
+
+respect to SOLID design principles\footnote{cf. \cite{solidcss}}
+sub-classes = re-usability through dry
+cascade
+
+DRY Principle \footnote{cf. \cite{pragmaticprogrammer}}
+low reusability
+- specificity
+- tight coupling with markup
+
+DRY CSS: breaks code structure
