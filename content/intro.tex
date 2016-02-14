@@ -1,23 +1,31 @@
 \chapter{Introduction}
 The results of a poll on \gls{css} Preprocessors with 13 000 responses conducted in 2012 by online magazine CSS-Tricks display a significant preference of those who tried preprocessors towards them.\footnote{cf. \cite{preprocessorpoll}}
 The popularity of preprocessors can be considered as a symptom of insufficiency \gls{css} as a tool for modern web projects.
-Artifacts of the search for effective and efficient methods to structure \gls{css} Code dates back to 2003.\footnote{cf. \cite{methodmails}}
+Stylesheet size and structure do have little perceptible impact on both load time and rendering performance.\footnote{cf. \cite{soundersonselectorperformance}}\footnote{cf. \cite{atkinsondryscope}}
+Browser inconsistencies have a relatively straightforward solution, namely normalize- or reset-stylesheets.\footnote{cf. \cite{meyeronreset}}\footnote{cf. \cite{gallagheronnormalize}}
+Solutions to layout problems like collapsing margins or unexpected float behavior tend to be less straightforward, but are proven and undebatable.\footnote{cf. \cite{meyeronfloats}}\footnote{cf. \cite{meyeronmargins}}
+However, artifacts of the search for effective and efficient methods to structure \gls{css} Code dates back to 2003.\footnote{cf. \cite{methodmails}}
 
-In the recent years several different practices and sets of practices have been promoted by widely recognized companies and individuals of the web development community.
+In the recent years several different practices or sets of practices to structure stylesheets have been promoted by widely recognized companies and individuals of the web development community.
 Among others, these include Yandex\footnote{cf. \cite{bem}}, Yahoo\footnote{cf. \cite{atomiccsssite}}.
-In defiance of the abundance of methods, resources that provide comparative information based on thorough examination is scarce.
-We will approach common problems in the development of \gls{css} caused by the features, quirks and shortcomings of the language.
-In the context of these problems we will examine methods promoted as solutions.
-The aim of this paper is to provide insight for frontend developers challenging best practices as well as a base for further research.
+In defiance of the abundance of methods and `best practices', resources that provide comparative information based on thorough examination are scarce.
+We will approach common structural problems in the development of \gls{css} caused by the features, quirks and shortcomings of the language.
+Consecutively, we will examine selected practices promoted as solutions for these problem.
+The aim of this paper is to provide comprehinsible insight on those for frontend developers that want to challenge best practices.
+%% IS THIS GOOD?
 
-The focus lies on purely \gls{css} based solution.
-This means that the usage of preprocessors and minification are not within the scope of this paper.
-Also out of scope are:
-\begin{itemize}
-    \item {\normalfont \bfseries Rendering gerformance} due to probable insignificance in comparison to other issues discussed here.
-    \item {\normalfont \bfseries Readability} due to a lack of measures for \gls{css}-specific readability. 
-        Readability is not to be confused with complexity and issues arising from it which will be addressed in \autoref{sec:scopeleaks}.
-\end{itemize}
+
+
+
+
+% The focus lies on purely \gls{css} based solution.
+% This means that the usage of preprocessors and minification are not within the scope of this paper.
+% Also out of scope are:
+% \begin{itemize}
+%     \item {\normalfont \bfseries Rendering gerformance} due to probable insignificance in comparison to other issues discussed here.
+%     \item {\normalfont \bfseries Readability} due to a lack of measures for \gls{css}-specific readability. 
+%         Readability is not to be confused with complexity and issues arising from it which will be addressed in \autoref{sec:scopeleaks}.
+% \end{itemize}
 % semantics: seo is not relevant
 % readability
 
