@@ -1,50 +1,121 @@
-\subsection{Scope Leaks}
+\subsection{Modularisation}
+
+The css-guidelines \gls{bem} and \gls{suit} share the concept of blocks.
+They define rules for structuring markup and class names, or rather rule selectors.
+% \gls{suit} is inspired by and may be viewed as being evolved from \gls{bem}.
+A block encapsulates \gls{html} and \gls{css} as well as `other implementation technologies'\footnote{\cite{bem}}  and are also referred to as components or modules.\footnote{cf. \cite{suit}}\footnote{cf. \cite{bem}} 
+Both have very similar conventions for the construction of \gls{css} rule selectors and the related markup.
+The following example displays the construction of component and child-element selectors in \gls{suit}.
+
+% snake/dash/camel case
+
+\lstset{language=CSS3,caption={SUIT naming convention},label=excerpt:suitconvention}
+\begin{lstlisting}
+// index.html
+
+<div class='BlockName'>
+  <div class='BlockName-descendantName>
+  ...
+
+// style.css
+
+.BlockName {}
+.BlockName-descendantName {}
+\end{lstlisting}
+
+\gls{bem} 
+Whereas the delimiters can be chosen freely in \gls{bem} the naming conventions are more specific for \gls{suit}.
+BEM recommends not nesting descendants of a block within each other.\footnote{cf. \cite{bemfaq}}
+The reason for capitalising the root node selector is to avoid name collisions and thus expectedly better integration with existing code.\footnote{cf. \cite{bemvssuitquestion}}
+
+
+
+
+% __________ scoping
+
 To this date, while some browsers support scoped \verb <style> -tags, the CSS scoping module level 1 is still in draft.\footnote{cf. \cite{cssscopingmodule}}\footnote{cf. \cite{styletag}}
 The \gls{w3c}-draft on CSS scoping defines a syntax that is similar to that of media queries.
 However, media queries no not operate based on the \gls{dom}-structure but are scoping styles based on various properties of the rendering device.\footnote{cf. \cite{mediaqueries}}
 Here it is possible to surround a set of rules with a selector that, if matched, limits these rules' scope to children of the matched element.
-\begin{verbatim}
+
+\begin{lstlisting}
 @scope div {
   span {
   color: blue;
   }
 }
-\end{verbatim}
+\end{lstlisting}
 In terms of limiting the visibility of rules this has the exact same effect as prefixing it with that selector.\footnote{cf. \cite{cssscopingmodule}}
-% Atkins  
-% syntactic sugar, other selector, tab atkins
+Atkins described this syntax as `selector sugar'.\footnote{cf. \cite{atkinsonselectorsugar}}
 
-A selector chain with more than one selector scopes the rule by the first selector:
-\begin{verbatim}
+A selector chain with more than one selector effectively scopes the rule by the first selector:
+
+\lstset{language=CSS3,caption={Basic scoping},label=excerpt:scoping}
+\begin{lstlisting}
 .sidebar span {
   background: red;
 }
 .sidebar a {
   color: blue;
 }
-\end{verbatim}
-\begin{figure}
-\caption{The rules are scoped within the context of sidebar elements}
-\end{figure}
+\end{lstlisting}
 
-The usage of this technique is often observed to limit the scope of styles to a specific page.
-Coyier introduced and Escalante recommends decorating decorating the body tag of each \gls{html} document of a project with an ID.\footnote{cf. \cite{coyieridbody}}\footnote{cf. \cite{mpgcss}}
-The major use case for page or page-type specific styles is the creation of visual exceptions among all pages.
+The conventions defined by SUIT and BEM achieve module-scoping differently.
+\autoref{excerpt:suitconvention} shows that the scoping here does not utilise the cascade but works through prefixing the actual class names.
+Block descendant styles are applied to elements decorated with the classname \verb ComponentName-descendantName , regardless of their position in the \gls{dom}.
+Escalante criticises this approach.
+Instead of leveraging the functionality of the cascade, \gls{bem} and \gls{suit} annul it to `replicate it [...] in a less efficient manner'.\footnote{\cite{mpgcss}}
+Inheriting the class name of the block root into the class name of a descendant causes repetition in both \gls{css} and \gls{html}.\footnote{cf. \cite{mpgcss}}
+{\slshape Title CSS} leverages the cascade to create a scope.\footnote{cf. \cite{titlecss}}
+Through separating the block identifier as distinct class, repetition within the \gls{html}-markup is avoided:
+
+\lstset{language=CSS3,caption={Title CSS Convention},label=excerpt:titlecss}
+\begin{lstlisting}
+.BlockName {}
+.BlockName .descendantName{}
+\end{lstlisting}
+
+Besides avoiding repetition, Cuthbert adds ease-of-writing as well as readability as rationales for {\slshape Title CSS} as naming convention.
+If Title CSS is executed in the style of the given scope leaks are still present.
+Whereas BEM and SUIT target descendants directly through class names, the cascade may also target identically named descendants of blocks nested within other blocks.
+To avoid this, we modify the conventions for creating descendant selectors like so: 
+
+\lstset{language=CSS3,caption={Title CSS Convention modified},label=excerpt:titlecssfixed}
+\begin{lstlisting}
+.BlockName > .descendantName{}
+\end{lstlisting}
+The \verb > component of the selector ensures that only direct descendants of \verb BlockName are matched with \verb descendantName.
+After presenting methods for avoiding scope leaks in \gls{css}, methods to avoid redundancy within \gls{css} files are presented in the following section.
+
+% performance
+% utility
+% - overriding 
+% shadowing
+
+
+
+
+
+
+\subsection{Page Scoping}
+Coyier introduced and Escalante recommends decorating the body element of each \gls{html} document of a project with an ID.\footnote{cf. \cite{coyieridbody}}\footnote{cf. \cite{mpgcss}}
+Prefixing a selector with a specific page id scopes the associated rule to that page or page type.
 Generally, page-specific styles may be used to define visual cues as visual orientation aids.
-A concrete example for this is a visual design specification that distinguishes the header of an article page through a an opaque background instead of being  a transparent layer over a darker image.
+A concrete example is distinguishing the header of an article page from other pages.
+% The major use case for page or page-type specific styles is the creation of visual exceptions among all pages.
 
-\begin{verbatim}
+\begin{lstlisting}
 header {
   background: transparent;
 }
 #article header {
   background: black;
 }
-\end{verbatim}
+\end{lstlisting}
 
 Coyier also exemplifies the use of page-specific styles through highlighting the currently selected entry of the main menu without changing the markup of the latter.
 
-\begin{verbatim}
+\begin{lstlisting}
 
 // index.html
 
@@ -62,45 +133,13 @@ nav li {}
 
 #about .nav-item.about {}
 
-\end{verbatim}
+\end{lstlisting}
 
 However this technique should be applied with caution.
-The markup and the styles in this example are coupled tightly and effectively violate the principle of \gls{soc}.
+The markup and the styles in this example are coupled tightly and effectively violate the principle of \gls{soc} because there is no visual information about the currently selected entry without the stylesheet.
 Each navigation entry requires an additional rule to function correctly in the context of the user interface.
 Because this leads to bloat in \gls{css} code when the number of navigation entry is growing, a dynamic \gls{js} client- or server-side solution modifying the markup might be more when aiming for scalability.
-
-The methodologies \gls{bem} and \gls{suit} share the concept of creating indivisble blocks in both .
-Blocks encapsulate \gls{html} and \gls{css} as well as `other implementation technologies'\footnote{\cite{bem}}  and are also referred to as `components'.\footnote{cf. \cite{suit}}\footnote{cf. \cite{bem}} 
-\gls{suit} is inspired by and may be viewed as being evolved from \gls{suit}.
-Both have very similar conventions for the construction of \gls{css} rule selectors and the related markup.
-The following example displays the construction of component and child-element selectors in \gls{suit}.
-snake/dash/camel case
-
-\begin{verbatim}
-.BlockName {}
-
-.BlockName-descendantName {}
-\end{verbatim}
-Whereas the delimiters can be chosen freely in \gls{bem} the naming conventions are more specific for \gls{suit}.
-The reason for capitalising the root node selector is to avoid name collisions and thus expectedly better integration with existing code.\footnote{cf. \cite{bemvssuitquestion}}
-The example shows that the scoping here does not utilise the cascade but works through prefixing the actual class names.
-Descendent styles are applied to elements decorated with the classname \verb ComponentName-descendantName , regardless of their position in the \gls{dom}.
-
-Escalante criticises this approach.
-Instead of leveraging the functionality of the cascade, \gls{bem} and \gls{suit} annul it to `replicate it [...] in a less efficient manner'.\footnote{\cite{mpgcss}}
-Inheriting the class name of the block root into the class name of a descendant causes repetitition and thus redundancy in the \gls{html}.\footnote{cf. \cite{mpgcss}}
-{\slshape Title CSS} leverages the cascade to create a scope.
-Through separating the block identifier as distinct class, repetition within the \gls{html}-markup is avoided:
-
-\begin{verbatim}
-.BlockName {}
-
-.BlockName .descendantName{}
-\end{verbatim}
-Besides avoiding repetition, Cuthbert adds ease-of-writing as well as readability as rationales for {\slshape Title CSS} as naming convention.
-After presenting methods for avoiding scope leaks in \gls{css}, methods to avoid redundancy within \gls{css} files are presented in the following section.
-
-% performance
-% utility
-% - overriding 
-% shadowing
+Page-specific IDs are also considered `global modifiers'.
+BEM does not accommodate the concept of global modifiers.\footnote{cf. \cite{bemfaq}}
+The rationale behind this convention is not exposed, but it can be accounted to aforementioned caveats.
+The following section explains how, among other methods, more granular modifiers can be utiliesed to reduce repetition
