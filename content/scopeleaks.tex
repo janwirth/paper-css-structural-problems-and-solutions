@@ -1,124 +1,64 @@
 \section{Scope Leaks}
-CSS were created by the design Principle \gls{soc} with the intent to separate content and visual style.
+CSS were created based on the design Principle \gls{soc} with the intent to separate content and visual style.
 In contrast to inline styles and embedded stylesheets they are reusable across different \gls{html} documents.
-To this date, while some browsers support scoped \verb <style> -tags, the CSS scoping module level 1 is still in draft.\footnote{cf. \cite{cssscopingmodule}}\footnote{cf. \cite{styletag}}
-This means that the rules of a referenced stylesheet apply to any part of the DOM if selectors are matched and the rule is not overwritten or shadowed.
-When a stylesheet is viewed as a program that is executed with the \gls{dom} as context, the \gls{css}-rules may be viewed as impure functions executed in given order, altering their arguments.\footnote{cf. \cite{linearabstractmachine} p.158}
+The rules of a stylesheet referenced in an \gls{html}-document may apply to any part of the DOM if selectors match and the rule is not overwritten or shadowed.
+Because the scope of \gls{css} rules is global, we can also describe them as `unscoped'.
+When a stylesheet is viewed as a program that is executed in the context of the \gls{dom}, the individual \gls{css}-rules may be viewed as impure functions executed in given order, altering their arguments.\footnote{cf. \cite{linearabstractmachine} p.158}
 
-Similar to a program with impure functions, the modification of a stylesheet with of unscoped styles can have unforeseen side effects.
+Similar to a program with impure functions, the stylesheet with of unscoped styles can have unforeseen side effects.
+This situation is also to consider when modifying such a stylesheet.
 For example, when a change is made to a selector or the associated properties with the intention to modify the visual appearance of a specific element of the \gls{dom}, the rule created or modified can apply to other elements aswell.
 This so called `scope leak'\footnote{cf. \cite{mpgcss}} can occur in any \gls{html}-Document that references this very stylesheet.
 When the developer undertaking the changes is not aware of all applications of a specific rule, some of the visual changes are considered unforeseen.
-The cascade and Specificity mechanism of \gls{css} adds some somplexity to possible side effects due to possible interactions between individual rules.
-The risk of unforeseen side effects in the development of generally unscoped \gls{css} is increased with the size of the codebase and the number of developers.
-This is due to the increased amount of knowledge required to foresee side effects. 
-Wulf and Shaw consider non-local variables `a major contributing factor in programs which are difficult to understand' for similar reasons.\footnote{\cite{globalvariables} p.28}
+We now illustrate the given situation, initially presenting a visualisation of a hypthetical \gls{dom}:
 
-However, global or 'base' styles are not inherently considered harmful.
-Their usage is suitable to provide representational consistency inside single aswell across multiple \gls{html} documents.\footnote{cf. \cite{mpgcss}}
-Scoping makes sense to create exceptions aswell as styling more complex structures isolated structures within the DOM.
-The effects of a change of scoped styles are easier to localize in comparison to unscoped styles.
-So when the intended visual effect of a specific rule is not global, it makes sense to scope it in order to possibly reduce cognitive load for developers.
-
-The aforementioned \gls{w3c}-draft on CSS scoping defines a syntax that is similar to that of media queries.
-However, media queries no not operate based on the \gls{dom}-structure but are scoping styles based on various properties of the rendering device.\footnote{cf. \cite{mediaqueries}}
-Here it is possible to surround a set of rules with a selector that, if matched, limits these rules' scope to children of the matched element.
-\begin{verbatim}
-    @scope div {
-      span {
-        color: blue;
-      }
-    }
-\end{verbatim}
-In terms of limiting the visibility of rules this has the exact same effect as prefixing it with that selector.\footnote{cf. \cite{cssscopingmodule}}
-
-A selector chain with more than one selector scopes the rule by the first selector:
-\begin{verbatim}
-.sidebar span {
-    background: red;
-}
-.sidebar a {
-    color: blue;
-}
-\end{verbatim}
-\begin{figure}
-\caption{The rules are scoped within the context of sidebar elements}
+\begin{figure}[H]
+  \centering
+  \Tree[.body 
+        [.form
+          [.label E-Mail: ]
+          [.input ]
+          [.button
+            [.span.label subscribe ]
+          ]
+        ]
+        [....
+          [.div.team-member
+            [.img ]
+            [.label.name ]
+          ]
+        ]
+      ]
 \end{figure}
 
-The usage of this technique is often observed to limit the scope of styles to a specific page.
-Coyier introduced and Escalante recommends decorating decorating the body tag of each \gls{html} document of a project with an ID.\footnote{cf. \cite{coyieridbody}}\footnote{cf. \cite{mpgcss}}
-The major use case for page or page-type specific styles is the creation of visual exceptions among all pages.
-Generally, page-specific styles may be used to define visual cues as visual orientation aids.
-A concrete example for this is a visual design specification that distinguishes the header of an article page through a an opaque background instead of being  a transparent layer over a darker image.
+The following rule was written with the intention to set the type on the `E-Mail'-label in bold weight.
 
 \begin{verbatim}
-header {
-    background: transparent;
-}
-#article header {
-    background: black;
+label {
+  font-weight: bold;
 }
 \end{verbatim}
 
-Coyier also exemplifies the use of page-specific styles through highlighting the currently selected entry of the main menu without changing the markup of the latter.
+Applying these rules achieves the intended effect, but also changes the weight of the type the name of a team member is set in.
+The \verb ... signify an arbitrarly complex \gls{dom}-structure.
+While it is obvious to us here that the rule will set the name of an employee in bold type, it may not be in an actual project.
+Depending on the here omitted complexity and the tools at hand, of the \gls{dom}, the effort connected to locating the effects of a modification may be large.
+The cascade and Specificity mechanism of \gls{css} adds some somplexity to possible side effects due to possible interactions between individual rules.
+We assume that in any stylesheet that the document references occurs the following, more specific, unscoped rule:
 
 \begin{verbatim}
-
-// index.html
-
-<body id='about'>
-    <nav>
-        <ul>
-            <li class='nav-item home'>
-            <li class='nav-item about'>
-        ...
-
-
-// style.css
-
-nav li {}
-
-#about .nav-item.about {}
-
+.label{
+  font-weight: light;
+}
 \end{verbatim}
 
-However this technique should be applied with caution.
-The markup and the styles in this example are coupled tightly and effectively violate the principle of \gls{soc}.
-Each navigation entry requires an additional rule to function correctly in the context of the user interface.
-Because this leads to bloat in \gls{css} code when the number of navigation entry is growing, a dynamic \gls{js} client- or server-side solution modifying the markup might be more when aiming for scalability.
+Now the \verb label -rule does not take effect, because the \verb .label -rule has a higher priority.\footnote{cf. \cite{w3conselectors}}
+To achieve the desired results, we need to undertake further modifications, e.g. increasing the specificity of the new rule, which may result in an increased complexity of the source code.
 
-The methodologies \gls{bem} and \gls{suit} share the concept of creating indivisble blocks in both .
-Blocks encapsulate \gls{html} and \gls{css} as well as `other implementation technologies'\footnote{\cite{bem}}  and are also referred to as `components'.\footnote{cf. \cite{suit}}\footnote{cf. \cite{bem}} 
-\gls{suit} is inspired by and may be viewed as being evolved from \gls{suit}.
-Both have very similar conventions for the construction of \gls{css} rule selectors and the related markup.
-The following example displays the construction of component and child-element selectors in \gls{suit}.
-snake/dash/camel case
+The risk of unforeseen side effects in the development of generally unscoped \gls{css} is increased with the complexity of the codebase and the number of both active and developers.
+This is caused by potentially decreased readability and the increase in knowledge required to foresee side effects. 
+Here we can draw a parallel between non-local rules and Wulf and Shaw's considerations of non-local variables as `a major contributing factor in programs which are difficult to understand' for similar reasons.\footnote{\cite{globalvariables} p.28}
+% dynamic web-applications
 
-\begin{verbatim}
-.BlockName {}
-
-.BlockName-descendantName {}
-\end{verbatim}
-Whereas the delimiters can be chosen freely in \gls{bem} the naming conventions are more specific for \gls{suit}.
-The reason for capitalising the root node selector is to avoid name collisions and thus expectedly better integration with existing code.\footnote{cf. \cite{bemvssuitquestion}}
-The example shows that the scoping here does not utilise the cascade but works through prefixing the actual class names.
-Descendent styles are applied to elements decorated with the classname \verb ComponentName-descendantName , regardless of their position in the \gls{dom}.
-
-Escalante criticises this approach.
-Instead of leveraging the functionality of the cascade, \gls{bem} and \gls{suit} annul it to `replicate it [...] in a less efficient manner'.\footnote{\cite{mpgcss}}
-Inheriting the class name of the block root into the class name of a descendant causes repetitition and thus redundancy in the \gls{html}.\footnote{cf. \cite{mpgcss}}
-{\slshape Title CSS} leverages the cascade to create a scope.
-Through separating the block identifier as distinct class, repetition within the \gls{html}-markup is avoided:
-
-\begin{verbatim}
-.BlockName {}
-
-.BlockName .descendantName{}
-\end{verbatim}
-Besides avoiding repetition, Cuthbert adds ease-of-writing as well as readability as rationales for {\slshape Title CSS} as naming convention.
-After presenting methods for avoiding scope leaks in \gls{css}, methods to avoid redundancy within \gls{css} files are presented in the following section.
-
-% performance
-% utility
-% - overriding 
-% shadowing
+However, global or `base' styles are not inherently considered harmful.
+Their usage is suitable to provide representational consistency inside single aswell across multiple \gls{html} documents.\footnote{cf. \cite{mpgcss}}

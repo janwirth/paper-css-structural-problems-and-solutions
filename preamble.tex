@@ -226,11 +226,4 @@
 \setlength\extrarowheight{2pt}
 
 
-% prevent page break on chapter
-\makeatletter
-\renewcommand\chapter{\par%
-  \thispagestyle{plain}%
-  \global\@topnum\z@
-  \@afterindentfalse
-  \secdef\@chapter\@schapter}
-\makeatother
+\usepackage{tikz-qtree}

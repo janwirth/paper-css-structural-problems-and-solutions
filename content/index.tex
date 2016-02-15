@@ -1,40 +1,42 @@
 \include{content/intro}
+% CSS3-Standard
 
-\chapter{Common Structural Problems of CSS}
-Structural problems that impact maintainability
-SOLID and DRY principle 
-readability: understandability
-semantics: not seo-relevant
-
-common problems
-general
-
-presentational
-floats:
-containing floats -> block formatting context
-
-
-definition by patterns / anti patterns
-'so benutzt man das'
-- 
-
-
-
-fix solutions to problem
-maintenance
-
-name und idee
-historie
+\chapter{Structural Problems of CSS}
+In this chapter, we will identify structural problems of \gls{css} and explain negative effects with the help of code samples.
+In that context we will examine the negative impact they have on both readability and scalability.
+By readabilty we mean how hard it is to comprehend the source code, i.e. acquire and maintain knowledge of the system that enables a developer to modify it without unexpected side-effects.
+A project is considered scalable here if increasing it's scale or complexity has little to no negative impacts on readability.
+The problems covered here are selected based on problems the aforementioned promoted practices are trying to solve.
+% validation of problem selection
 
 \input{content/scopeleaks}
-
 \input{content/dryviolations}
-\
 
-Some solutions apply or do not apply to specific programmaning styles and workflows
-% There are multiple difference between the scoping module and prefixing rule selectors with another selector.
-% However the biggest difference is absolute specifity, i.e. the cascade prioritize scoped styles.
-% The following section introduces multiple methods to scope \gls{css} rules.
-% All these methods work on information provided by the \gls{dom}.
-% There are two observed established techniques to utilise rules scoped with prefixes.
-% The most frequently observed usage of 
+% Vendor-prefixes
+
+\section{Solutions}
+After describing \gls{css}-specific structural problems, we will now introduce methods take from the promoted set of practices.
+We note that the methods presented may not be suitable for any developer or project due to both personal preference or established conventions and practices.
+The methods covered here are introduced and evaluated based on code samples.
+In the evaluation we will also consider semanticity of selectors.
+This refers to what a reader can infer about the contents of a rule by reading the associated selector alone.
+We note that semantics here are not to be confused with microformats and semantic \gls{html}5-Elements and thus are not relevant to \gls{seo}.
+
+\input{content/solutions/scopeleaks}
+\input{content/solutions/dryviolations}
+
+\chapter{Conclusion}
+\gls{css} as a language is easy to learn and hard to master.
+The speed at which tangible results can be produced when using \gls{css} is fairly high, but may decline quickly.
+Because of that, the development process of \gls{css} should implement adequate and effective methods to prevent scope leaks and gratuitous repetition with the aim to improve readability and scalability.
+Cutting the technical debt caused by structural problems of \gls{css} involves not only modifying stylesheets but also the \gls{html}-documents that reference them.
+The cost of this may be increased through possible tight coupling of other software components with the \gls{html}-component.
+
+The examination of the selected methods showed that there are effective solutions available for preventing scope leaks and confining gratuitious repetition.
+However, the methods aimed at enforcing \gls{dry} are mutually exclusive, as both naming conventions and mechanics.
+They exist on a scale that ranges from complete decoupling and maximum reusability to flexible modularity with limited reusability.
+In addition the efficiency of Atomic \gls{css} is limited by page scoping methods.
+The decision when to apply scoping methods and which naming or rather structure convention to select remains to be decided in concrete project context with respect to developer preferences and established conventions.
+% alignment of methods
+
+% cascade
