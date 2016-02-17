@@ -3,12 +3,17 @@
 
 \chapter{Structural Problems of CSS}
 In this chapter, we will identify structural problems of \gls{css} and explain negative effects with the help of code samples.
-In that context we will examine the negative impact they have on both readability and scalability.
-By readabilty we mean how hard it is to comprehend the source code, i.e. acquire and maintain knowledge of the system that enables a developer to modify it without unexpected side-effects.
-A project is considered scalable here if increasing it's scale or complexity has little to no negative impacts on readability.
-The problems covered here are selected based on problems the aforementioned promoted practices are trying to solve.
+Consecutively we present solutions for those problems.
+The structural problems are selected by the expected amount of technical debt their encounter adds to a project.
+They are a sub-set of the problems thath the method sets mentioned in \autoref{ch:intro} are addressiing and belong in either of two categories:
+Violations of the gls{dry} principle are a general problem in software development and inherent to \gls{css} because \gls{css} itself provides no means to reference values.
+This includes selectors, attribute-value-pairs and larger structures like entires rules and parts of those.
+But first, we will cover scope leaks as a cause for unexpected side-effects.
+
+% Maintainability includes readability and scalability.
+% A project is considered scalable here if increasing it's scale or complexity has little to no negative impacts on readability.
 % validation of problem selection
-% problem - rule grouping
+% problem - rule grouping by semantic css WHAT DOES IT MEAN
 
 \input{content/scopeleaks}
 \input{content/dryviolations}
@@ -40,7 +45,9 @@ The examination of the selected methods showed that there are effective solution
 However, the methods aimed at enforcing \gls{dry} are mutually exclusive, as both naming conventions and mechanics.
 They exist on a scale that ranges from complete decoupling and maximum reusability to flexible modularity with limited reusability.
 In addition the efficiency of Atomic \gls{css} is limited by page scoping methods.
-The decision when to apply scoping methods and which naming or rather structure convention to select remains to be decided in concrete project context with respect to developer preferences and established conventions.
-% alignment of methods
+The decision about when to apply scoping methods and which naming or rather structure convention to select remains to be decided in concrete project context with respect to developer preferences and established conventions.
 
-% cascade
+The list of problems and solutions evaluated in this paper is incomplete.
+As the selection of problems and solution is based on estimations of negative impact on code structure and the attention attributed to each, it makes sense to examine other issues like state management, performance, browser inconsistencies etc.
+A more complete view of language-specific problems in the development of CSS could enable researchers to design abstract pattern libraries that consider the most important issues without restrictions in implementation details.
+However, in order to reach the level of knowledge similar to general knowledge in software engineering, more efforts must be made in the research of front-end development, specifically CSS.

@@ -1,4 +1,5 @@
 \section{Scope Leaks}
+\label{sec:scopeleaks}
 CSS were created based on the design Principle \gls{soc} with the intent to separate content and visual style.
 In contrast to inline styles and embedded stylesheets they are reusable across different \gls{html} documents.
 The rules of a stylesheet referenced in an \gls{html}-document may apply to any part of the DOM if selectors match and the rule is not overwritten or shadowed.
@@ -53,10 +54,10 @@ We assume that in any stylesheet that the document references occurs the followi
 \end{verbatim}
 
 Now the \verb label -rule does not take effect, because the \verb .label -rule has a higher priority.\footnote{cf. \cite{w3conselectors}}
-To achieve the desired results, we need to undertake further modifications, e.g. increasing the specificity of the new rule, which may result in an increased complexity of the source code.
+To achieve the desired results, we need to undertake further modifications, e.g. increasing the specificity of the new rule, which again results in an increased complexity of the source code.
 
 The risk of unforeseen side effects in the development of generally unscoped \gls{css} is increased with the complexity of the codebase and the number of both active and developers.
-This is caused by potentially decreased readability and the increase in knowledge required to foresee side effects. 
+Scope leaks increase the effort required to comprehend the source code, i.e. acquire and maintain knowledge of the system that enables a developer to modify it without unexpected side-effects while achieving the desired effect.
 Here we can draw a parallel between non-local rules and Wulf and Shaw's considerations of non-local variables as `a major contributing factor in programs which are difficult to understand' for similar reasons.\footnote{\cite{globalvariables} p.28}
 % dynamic web-applications
 
