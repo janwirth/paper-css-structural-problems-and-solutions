@@ -17,10 +17,10 @@ We now illustrate the given situation, initially presenting a visualisation of a
   \centering
   \Tree[.body 
         [.form
-          [.label E-Mail: ]
+          [.label ]
           [.input ]
           [.button
-            [.span.label subscribe ]
+            [.span.label ]
           ]
         ]
         [....
@@ -32,26 +32,28 @@ We now illustrate the given situation, initially presenting a visualisation of a
       ]
 \end{figure}
 
-The following rule was written with the intention to set the type on the `E-Mail'-label in bold weight.
+The following rule was written with the intention to set the type of the label inside the form in bold weight:
 
-\begin{verbatim}
+\lstset{language=CSS3,caption={Rule with side effects}}
+\begin{lstlisting}
 label {
   font-weight: bold;
 }
-\end{verbatim}
+\end{lstlisting}
 
 Applying these rules achieves the intended effect, but also changes the weight of the type the name of a team member is set in.
 The \verb ... signify an arbitrarly complex \gls{dom}-structure.
 While it is obvious to us here that the rule will set the name of an employee in bold type, it may not be in an actual project.
 Depending on the here omitted complexity and the tools at hand, of the \gls{dom}, the effort connected to locating the effects of a modification may be large.
-The cascade and Specificity mechanism of \gls{css} adds some somplexity to possible side effects due to possible interactions between individual rules.
+The cascade and specificity mechanism of \gls{css} adds some somplexity to possible side effects due to possible interactions between individual rules.
 We assume that in any stylesheet that the document references occurs the following, more specific, unscoped rule:
 
-\begin{verbatim}
+\lstset{language=CSS3,caption={Rule with non-generic specificity}}
+\begin{lstlisting}
 .label{
   font-weight: light;
 }
-\end{verbatim}
+\end{lstlisting}
 
 Now the \verb label -rule does not take effect, because the \verb .label -rule has a higher priority.\footnote{cf. \cite{w3conselectors}}
 To achieve the desired results, we need to undertake further modifications, e.g. increasing the specificity of the new rule, which again results in an increased complexity of the source code.
