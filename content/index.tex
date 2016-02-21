@@ -1,32 +1,23 @@
 \include{content/intro}
-% CSS3-Standard
 
 \chapter{Structural Problems of CSS}
-In this chapter, we will identify structural problems of \gls{css} and explain negative effects with the help of code samples.
+In this chapter, we identify structural problems of \gls{css} and explain negative effects with the help of code samples.
 Consecutively we present solutions for those problems.
 The structural problems are selected by the expected amount of technical debt their encounter adds to a project.
-They are a sub-set of the problems thath the method sets mentioned in \autoref{ch:intro} are addressiing and belong in either of two categories:
-Violations of the gls{dry} principle are a general problem in software development and inherent to \gls{css} because \gls{css} itself provides no means to reference values.
-This includes selectors, attribute-value-pairs and larger structures like entires rules and parts of those.
-But first, we will cover scope leaks as a cause for unexpected side-effects.
-
-% Maintainability includes readability and scalability.
-% A project is considered scalable here if increasing it's scale or complexity has little to no negative impacts on readability.
-% validation of problem selection
-% problem - rule grouping by semantic css WHAT DOES IT MEAN
+They are a sub-set of the problems that practices sets mentioned in \autoref{ch:intro} are addressing and belong in either of two categories.
+Violations of the \gls{dry} principle are common culprits in software development but inherent to \gls{css} because \gls{css} itself provides no means to store and recall values.
+This includes, but is not limited to, selectors, attribute-value-pairs and entire rules.
+Now we examine leaks as a cause for unexpected side-effects.
 
 \input{content/scopeleaks}
 \input{content/dryviolations}
 
-% Vendor-prefixes
-
-
 \section{Solutions}
-After describing \gls{css}-specific structural problems, we will now introduce methods take from the promoted set of practices.
-We note that the methods presented may not be suitable for any developer or project due to both personal preference or established conventions and practices.
+After describing structural problems of \gls{css}, we now introduce methods taken from the sets of practices introduced in \autoref{ch:intro}.
+We note that the methods presented are probably not suitable for every developer and project due to personal preference and established conventions.
 The methods covered here are introduced and evaluated based on code samples.
 In the evaluation we will also consider semanticity of selectors.
-This refers to what a reader can infer about the contents of a rule by reading the associated selector alone.
+This refers to what a reader can infer about the purpose of a rule by reading the associated selector alone.
 We note that semantics here are not to be confused with microformats and semantic \gls{html}5-Elements and thus are not relevant to \gls{seo}.
 
 \input{content/solutions/scopeleaks}
@@ -36,16 +27,16 @@ We note that semantics here are not to be confused with microformats and semanti
 
 \chapter{Conclusion}
 \gls{css} as a language is easy to learn and hard to master.
-The speed at which tangible results can be produced when using \gls{css} is fairly high, but may decline quickly.
+The speed at which tangible results can be produced when using \gls{css} is fairly high but may decline quickly because of the structural problems of \gls{css}
 Because of that, the development process of \gls{css} should implement adequate and effective methods to prevent scope leaks and gratuitous repetition with the aim to improve readability and scalability.
-Cutting the technical debt caused by structural problems of \gls{css} involves not only modifying stylesheets but also the \gls{html}-documents that reference them.
-The cost of this may be increased through possible tight coupling of other software components with the \gls{html}-component.
+Cutting the technical debt caused by structural problems of \gls{css} usually involves not only modifying style sheets but also the \gls{html}-documents that reference them.
+The cost of this may be increased by tight coupling of other software components with the \gls{html}-component.
 
-The examination of the selected methods showed that there are effective solutions available for preventing scope leaks and confining gratuitious repetition.
-However, the methods aimed at enforcing \gls{dry} are mutually exclusive, as both naming conventions and mechanics.
+The examination of the selected methods showed that there are effective solutions available to prevent scope leaks and confine gratuitious repetition.
+However, some methods aimed at enforcing the \gls{dry} principle are incompatible with each other.
 They exist on a scale that ranges from complete decoupling and maximum reusability to flexible modularity with limited reusability.
-In addition the efficiency of Atomic \gls{css} is limited by page scoping methods.
-The decision about when to apply scoping methods and which naming or rather structure convention to select remains to be decided in concrete project context with respect to developer preferences and established conventions.
+% In addition the efficiency of Atomic \gls{css} is limited by page scoping methods.
+The decision about when to apply scoping methods or naming and structure conventions remains to be decided in concrete project context with respect to developer preferences and established conventions.
 
 The list of problems and solutions evaluated in this paper is incomplete.
 As the selection of problems and solution is based on estimations of negative impact on code structure and the attention attributed to each, it makes sense to examine other issues like state management, performance, browser inconsistencies etc.

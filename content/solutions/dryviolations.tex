@@ -1,37 +1,33 @@
 \subsection{Decoupling}
 There are several tools and methods available that allow eliminating repetitions in \gls{css}-code.
-Variables are, to this date, only fully supported by Firefox 31 and has been removed as an experimental feature in Google Chrome from version 33 to 34.\footnote{cf. \cite{cssvariables}}
-To eliminate the duplication constants are sufficient.
-Besides variables there are no native gls{css} means to emulate constants in their classical definition.
+Variables are, to this date, only fully supported by Firefox Desktop and Android as well as Chrome 49.\footnote{cf. \cite{cssvariables}}
+Besides variables there are no \gls{css} to eliminate repetition within style sheets alone.
 
 All common \gls{css}-Preprocessors provide a variable feature.
 These variables are only variable during the actual processing and not at interpretation-time.
 Thus preprocessor variables are effectively constants.\footnote{cf. \cite{wirthpreprocessors} p.27}
+To eliminate the duplication constants are sufficient.
 Using preprocessors allows eliminating repetition in the source code to some degree
 but the repetition will still be observable in the processed \gls{css}.
-Verou assumes that the usage of preprocessors may result in the developer `losing track of CSS filesize'.\footnote{cf. \cite{veroupreprocessors}}
-This potential may not be as big when using preprocessed variables, but bigger for other language features like mixins.
-Due to the lack of variables, 
-% information size
-% bandwidth for user
+% Verou assumes that the usage of preprocessors may result in the developer `losing track of CSS filesize'.\footnote{cf. \cite{veroupreprocessors}}
+% This potential may not be as big when using preprocessed variables, but bigger for other language features like mixins.
 
 \subsubsection*{Atomic CSS}
-An approach to completely eliminate repetition in native \gls{css} code is Atomic \gls{css}, presentend in 2013 by Koblentz, frontend developer at Yahoo.
-It advocates splitting the \gls{css} source code in the smallest possible parts.
+An approach to completely eliminate repetition in vanilla \gls{css} is Atomic \gls{css}.
+It was presentend in 2013 by Koblentz, frontend engineer at Yahoo.
+It advocates splitting the \gls{css} code in the smallest possible parts.
+These parts are usually rules with a single attribute-value pair.
 Atomic \gls{css} rules represent a specific visual appearance.
-The class names of the individual rules are not semantic but representational.
-This effectively decouples the \gls{css} from the structure of the \gls{html} document.
-
-% approach by frameworks, high reusability
+The class names of the individual rules are constructed based on their style attributes.
+Atomic CSS effectively decouples the \gls{css} from the structure of the \gls{html} document.
 
 \lstset{language=CSS3,caption={Atomic CSS Rule}}
 \begin{lstlisting}
-.Mend-small {
+.Mend-10 {
     margin-left: 10px;
 }
 \end{lstlisting}
 
-In contrast to block-based approaches like \gls{suit} and \gls{bem} Atomic CSS is no scoping and no nesting.
 Rules do not have a specific context and thus are highly reusable.\footnote{cf. \cite{atomiccssarticle}}
 There are multiple tradeoffs to the Atomic CSS approach:
 
@@ -40,18 +36,21 @@ There are multiple tradeoffs to the Atomic CSS approach:
         This means more classes need to be assigned to each element whose visual appearence deviates from default and base styles.
         The resulting markup may be considered bloated.
 
-    \item {\normalfont \bfseries Non-semantic class names:} Because of the radical decoupling the \gls{css} rules are named by the visual attribute they yield. 
+    \item {\normalfont \bfseries Presentational class names and no scoping:} Because of the radical decoupling the \gls{css} rules are named by the visual attribute they yield. 
         The lack of scoping possibly impedes the developer's ability to localize the effect of changes.
 
-    \item {\normalfont \bfseries Changing names and unused rules:} The W3C states that `Good names don't change'.\footnote{\cite{classsemantics}}
+    \item {\normalfont \bfseries Changing names:} The W3C states that `Good names don't change'.\footnote{\cite{classsemantics}}
         The Usage of class names that inherit attribute values are a violation of \gls{dry}. 
-        Replacing these attribute values with names like \verb small may eleminate the need to change class names when the actual attribute values change.
+        Replacing these inherited attribute values with names like \verb small may eliminate the need to change class names when the actual attribute values change.
+
+    \item {\normalfont \bfseries Unused rules:} As there is no semantic link between the elements of the \gls{ui} and the class names, removing nodes from the DOM may result in orphande rules.
+    \item {\normalfont \bfseries State management:} Because Atomic CSS does not accomodate modifiers, states of \gls{ui} elements have to be defined as a set of atomic classes within the context of the \gls{ui} element.
 \end{itemize}
 
 The development of the Atomic CSS approach has since been continued by Yahoo but is not examined in detail, because the new methods involve the usage of processors.
 Current versions do not involve direct editing of \gls{css}-files.
-Class names define the actual style attributes.
-Atomizer, a build tool that extracts \gls{css} rules from the definitions in the markup is used to generate gls{css}-files.
+The class names assigned to the DOM define the actual style attributes.
+Atomizer, a build tool that extracts \gls{css} rules from the definitions in the markup is used to generate \gls{css}-files.
 Atomizer supports the usage of variables.
 Whereas an overhead of unused rules in the \gls{css}-files is prevented by this approach, the markup is still studded with non-semantically named classes.\footnote{cf. \cite{atomiccsssite}}
 % vs inline styles
@@ -61,10 +60,10 @@ Whereas an overhead of unused rules in the \gls{css}-files is prevented by this 
 \subsubsection*{Inheritance}
 Whereas Atomic CSS recommends a quite radical approach, the methods described in \autoref{sec:modules} can be extended to emulate patterns from object oriented programming.
 
-According to SOLID\footnote{Acrfull{SOLID}} CSS classes should be supposed to be modeled with a responsibility in mind, e.g. styling buttons.\footnote{\cite{solidcss}}
+According to SOLID\footnote{\Acrfull{solid}}, CSS classes should be modeled with a single responsibility in mind, e.g. styling buttons.\footnote{\cite{solidcss}}
 BEM and SUIT use this concept in the development of components.
 Components can be extended by sub-classes.
-In the following code excerpt the \verb BaseComponent styles are inherited through appending the selector of the extending class.
+In the following code listing the \verb BaseComponent styles are inherited through appending the selector of the extending class.
 \lstset{language=CSS3,caption={Module extension}}
 \begin{lstlisting}
 .BaseComponent,
@@ -77,13 +76,13 @@ In the following code excerpt the \verb BaseComponent styles are inherited throu
 The sub class may then be assigned to a DOM element to apply both base styles and extended styles to it.
 This method respects the Open / Closed principle.
 Base classes should have a single responsibility and thus be impartible.
-If this is respected, a base class ideally does not change if the requirements to the UI are constant.
+If this is respected, a base class ideally does not change if the requirements to the \gls{ui} are constant.
 The base classes are then open to extension but closed to change.
 
 Decorators have a similar effect.
 Instead of modeling inheritance within the stylesheet, both base and decorator classes are modeled seperately.
 The decorator is then applied to a DOM element with the according base class.
-The visual apperance of this element is then modified with out altering that of the base class.
+The visual apperance of this element is then modified without altering that of the base class.
 Decorators shift some repetition to the HTML document in contrast to subclassing:
 \lstset{language=CSS3,caption={Module decorator}}
 \begin{lstlisting}
@@ -95,12 +94,15 @@ Decorators shift some repetition to the HTML document in contrast to subclassing
 
 
 \subsubsection*{Utility classes}
-Some styles are hard to link to specific classes exclusively.
-This is reflected that it is usually hard to find a descendant name that makes sense the module in context.
-A use case for utility classes is the implementation of workarounds for limitations of \gls{css}.
-Like Atomic CSS classes, their names are based on their specific styles.
+Some styling is hard to attribute to a specific component.
+This is proven by the fact that in these cases it is hard to find a descendant name that makes sense in the naming convention.
+Utility classes are used to cover such situations.\footnote{cf. \cite{suit}}
+An common use case is the implementation of workarounds for limitations of \gls{css} and \gls{html}.
+Similiar to Atomic CSS classes, the names of utility classes are based on their specific styles and have no context.
 This makes them highly reusable.
 The following example displays the use of a utility class to prevent single orphaned words which is not possible without additional markup:
+
+\pagebreak
 \lstset{language=CSS3,caption={Utilities}}
 \begin{lstlisting}
 .u-nowrap {
@@ -112,9 +114,9 @@ The following example displays the use of a utility class to prevent single orph
     <span class='u-nowrap'> sit amet.</span>
 </h1>
 \end{lstlisting}
-A class name like \verb .Heading-nowrap would break with the naming scheme of modules and limit the reusability of this class.
+A class name like \verb .Heading-nowrap  would break with the naming scheme of modules and limit the reusability of this class.
 The heading is not any less of a heading of the \verb .u-nowrap element is missing.
-This element is markup that was added with the sole purpose to extend the capabilities of HTML and CSS.
+This element is markup that was added with the sole purpose to extend the capabilities of HTML and CSS and may be reused for any texts in the \gls{ui}.
 Also, in this example, if a template engine is in place, it makes sense to delegate the wrapping of the last two words to it.
 Utility classes do not change.
 They barely yield properties with numeric values but rather those with a limited set of options.

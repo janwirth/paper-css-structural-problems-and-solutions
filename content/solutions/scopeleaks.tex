@@ -1,20 +1,17 @@
 \subsection{Modularisation}
+\label{sec:modules}
 
-The css-guidelines \gls{bem} and \gls{suit} share the concept of blocks.
-They define rules for structuring markup and class names, or rather rule selectors.
-% \gls{suit} is inspired by and may be viewed as being evolved from \gls{bem}.
+The guidelines of \gls{bem} and \gls{suit} share the concept of blocks.
 A block encapsulates \gls{html} and \gls{css} as well as `other implementation technologies'\footnote{\cite{bem}}  and are also referred to as components or modules.\footnote{cf. \cite{suit}}\footnote{cf. \cite{bem}} 
-Both have very similar conventions for the construction of \gls{css} rule selectors and the related markup.
+Both guidelines define similar rules for structuring markup, class names and selectors for blocks.
 The following example displays the construction of component and child-element selectors in \gls{suit}.
 
-% snake/dash/camel case
-
-\lstset{language=CSS3,caption={SUIT naming convention},label=excerpt:suitconvention}
+\lstset{language=CSS3,caption={SUIT naming convention},label=listing:suitconvention}
 \begin{lstlisting}
 // index.html
 
 <div class='BlockName'>
-  <div class='BlockName-descendantName>
+  <div class='BlockName-descendantName'>
   ...
 
 // style.css
@@ -24,9 +21,9 @@ The following example displays the construction of component and child-element s
 \end{lstlisting}
 
 \gls{bem} 
-Whereas the delimiters can be chosen freely in \gls{bem} the naming conventions are more specific for \gls{suit}.
+Whereas the delimiters can be chosen freely in \gls{bem}, the naming conventions are more specific for \gls{suit}.
 BEM recommends not nesting descendants of a block within each other.\footnote{cf. \cite{bemfaq}}
-The reason for capitalising the root node selector is to avoid name collisions and thus expectedly better integration with existing code.\footnote{cf. \cite{bemvssuitquestion}}
+The reason for capitalising the block selector is to avoid name collisions with existing code, provided that existing class names begin with a lowercase character.\footnote{cf. \cite{bemvssuitquestion}}
 
 
 
@@ -34,10 +31,12 @@ The reason for capitalising the root node selector is to avoid name collisions a
 % __________ scoping
 
 To this date, while some browsers support scoped \verb <style> -tags, the CSS scoping module level 1 is still in draft.\footnote{cf. \cite{cssscopingmodule}}\footnote{cf. \cite{styletag}}
-The \gls{w3c}-draft on CSS scoping defines a syntax that is similar to that of media queries.
+The \gls{w3c} draft on CSS scoping defines a syntax that is similar to that of media queries.
 However, media queries no not operate based on the \gls{dom}-structure but are scoping styles based on various properties of the rendering device.\footnote{cf. \cite{mediaqueries}}
-Here it is possible to surround a set of rules with a selector that, if matched, limits these rules' scope to children of the matched element.
+The \verb @scope  allows surrounding a set of rules with a selector, limiting these rules' scope to children of the element matched by that selector.
 
+\pagebreak
+\lstset{language=CSS3,caption={Scope module example},label=listing:scopemodule}
 \begin{lstlisting}
 @scope div {
   span {
@@ -46,11 +45,11 @@ Here it is possible to surround a set of rules with a selector that, if matched,
 }
 \end{lstlisting}
 In terms of limiting the visibility of rules this has the exact same effect as prefixing it with that selector.\footnote{cf. \cite{cssscopingmodule}}
-Atkins described this syntax as `selector sugar'.\footnote{cf. \cite{atkinsonselectorsugar}}
+Atkins, member of the W3C CSS Working Group, describes this syntax as `selector sugar'.\footnote{cf. \cite{atkinsonselectorsugar}}
 
 A selector chain with more than one selector effectively scopes the rule by the first selector:
 
-\lstset{language=CSS3,caption={Basic scoping},label=excerpt:scoping}
+\lstset{language=CSS3,caption={Basic scoping with prefixed selector},label=listing:scoping}
 \begin{lstlisting}
 .sidebar span {
   background: red;
@@ -61,49 +60,41 @@ A selector chain with more than one selector effectively scopes the rule by the 
 \end{lstlisting}
 
 The conventions defined by SUIT and BEM achieve module-scoping differently.
-\autoref{excerpt:suitconvention} shows that the scoping here does not utilise the cascade but works through prefixing the actual class names.
+\autoref{listing:suitconvention} shows that the scoping here does not utilise the cascade but works through prefixing the actual class names.
 Block descendant styles are applied to elements decorated with the classname \verb ComponentName-descendantName , regardless of their position in the \gls{dom}.
 Escalante criticises this approach.
 Instead of leveraging the functionality of the cascade, \gls{bem} and \gls{suit} annul it to `replicate it [...] in a less efficient manner'.\footnote{\cite{mpgcss}}
-Inheriting the class name of the block root into the class name of a descendant causes repetition in both \gls{css} and \gls{html}.\footnote{cf. \cite{mpgcss}}
-{\slshape Title CSS} leverages the cascade to create a scope.\footnote{cf. \cite{titlecss}}
+Inheriting the name of the block into the class name of a descendant causes repetition in both \gls{css} and \gls{html}.\footnote{cf. \cite{mpgcss}}
+{\slshape Title CSS} leverages the cascade for scope emmulation.\footnote{cf. \cite{titlecss}}
 Through separating the block identifier as distinct class, repetition within the \gls{html}-markup is avoided:
 
-\lstset{language=CSS3,caption={Title CSS Convention},label=excerpt:titlecss}
+\lstset{language=CSS3,caption={Title CSS Convention},label=listing:titlecss}
 \begin{lstlisting}
 .BlockName {}
 .BlockName .descendantName{}
 \end{lstlisting}
 
-Besides avoiding repetition, Cuthbert adds ease-of-writing as well as readability as rationales for {\slshape Title CSS} as naming convention.
-If Title CSS is executed in the style of the given scope leaks are still present.
+Besides avoiding repetition, Cuthbert, the creator of Title CSS, adds ease-of-writing as well as readability as rationales for {\slshape Title CSS} as naming convention.
+If Title CSS is executed in the style of the given example, the risk of scope leaks persists.
 Whereas BEM and SUIT target descendants directly through class names, the cascade may also target identically named descendants of blocks nested within other blocks.
 To avoid this, we modify the conventions for creating descendant selectors like so: 
 
-\lstset{language=CSS3,caption={Title CSS Convention modified},label=excerpt:titlecssfixed}
+\lstset{language=CSS3,caption={Title CSS Convention modified},label=listing:titlecssfixed}
 \begin{lstlisting}
 .BlockName > .descendantName{}
 \end{lstlisting}
-The \verb > component of the selector ensures that only direct descendants of \verb BlockName are matched with \verb descendantName .
-After presenting methods for avoiding scope leaks in \gls{css}, methods to avoid redundancy within \gls{css} files are presented in the following section.
-
-% performance
-% utility
-% - overriding 
-% shadowing
-
-
+The \verb >  component of the selector ensures that only direct childrent of \verb BlockName are matched with \verb descendantName .
 
 
 
 
 \subsection{Page Scoping}
 Coyier introduced and Escalante recommends decorating the body element of each \gls{html} document of a project with an ID.\footnote{cf. \cite{coyieridbody}}\footnote{cf. \cite{mpgcss}}
-Prefixing a selector with a specific page id scopes the associated rule to that page or page type.
-Generally, page-specific styles may be used to define visual cues as visual orientation aids.
-A concrete example is distinguishing the header of an article page from other pages.
-% The major use case for page or page-type specific styles is the creation of visual exceptions among all pages.
+Prefixing a selector with such an ID scopes the associated rule to the correspondent pages.
+Generally, page-specific styles may be used to define visual cues as orientation aids.
+A concrete example is distinguishing the header of an article page from that of other pages.
 
+\lstset{language=CSS3,caption={Page-specific exception},label=listing:titlecssfixed}
 \begin{lstlisting}
 header {
   background: transparent;
@@ -115,8 +106,9 @@ header {
 
 Coyier also exemplifies the use of page-specific styles through highlighting the currently selected entry of the main menu without changing the markup of the latter.
 
+\pagebreak
+\lstset{language=CSS3,caption={Highlighting of navigation entry with page scope},label=listing:titlecssfixed}
 \begin{lstlisting}
-
 // index.html
 
 <body id='about'>
@@ -129,17 +121,17 @@ Coyier also exemplifies the use of page-specific styles through highlighting the
 
 // style.css
 
-nav li {}
-
-#about .nav-item.about {}
+#about .nav-item.about {
+  font-weight: bold;
+}
 
 \end{lstlisting}
 
 However this technique should be applied with caution.
 The markup and the styles in this example are coupled tightly and effectively violate the principle of \gls{soc} because there is no visual information about the currently selected entry without the stylesheet.
-Each navigation entry requires an additional rule to function correctly in the context of the user interface.
-Because this leads to bloat in \gls{css} code when the number of navigation entry is growing, a dynamic \gls{js} client- or server-side solution modifying the markup might be more when aiming for scalability.
-Page-specific IDs are also considered `global modifiers'.
+Each navigation entry requires an additional rule to function correctly in the context of the \gls{ui}.
+Because this leads to bloat in \gls{css} code when the number of navigation entry is growing, a dynamic \gls{js} client- or server-side solution that modifies the markup is a better choice when aiming for scalability.
+BEM calls IDs that are assigned to the body tags `global modifiers'.
 BEM does not accommodate the concept of global modifiers.\footnote{cf. \cite{bemfaq}}
 The rationale behind this convention is not exposed, but it can be accounted to aforementioned caveats.
-The following section explains how, among other methods, more granular modifiers can be utiliesed to reduce repetition
+The following section explains how, among other techniques, more granular modifiers can be utilised to reduce repetition.

@@ -1,17 +1,19 @@
 \section{Scope Leaks}
 \label{sec:scopeleaks}
-CSS were created based on the design Principle \gls{soc} with the intent to separate content and visual style.
-In contrast to inline styles and embedded stylesheets they are reusable across different \gls{html} documents.
-The rules of a stylesheet referenced in an \gls{html}-document may apply to any part of the DOM if selectors match and the rule is not overwritten or shadowed.
-Because the scope of \gls{css} rules is global, we can also describe them as `unscoped'.
-When a stylesheet is viewed as a program that is executed in the context of the \gls{dom}, the individual \gls{css}-rules may be viewed as impure functions executed in given order, altering their arguments.\footnote{cf. \cite{linearabstractmachine} p.158}
+CSS were created with the software design principle \gls{soc} and the intent to separate content and visual styling.\footnote{cf. \cite{hakonphdoncss} p.74}
+In contrast to inline styles and embedded style sheets they are reusable across different \gls{html} documents.
+The rules of a stylesheet referenced in an \gls{html}-document may apply to any part of the DOM if selectors match.
+This is because the scope of \gls{css} rules is global by default.
+We also call them `unscoped'.
+When we consider a stylesheet as a program that is executed in the context of the \gls{dom}, the individual \gls{css}-rules behave like as impure functions executed in given order.
+This means they alter their arguments.\footnote{cf. \cite{linearabstractmachine} p.158}
 
-Similar to a program with impure functions, the stylesheet with of unscoped styles can have unforeseen side effects.
-This situation is also to consider when modifying such a stylesheet.
-For example, when a change is made to a selector or the associated properties with the intention to modify the visual appearance of a specific element of the \gls{dom}, the rule created or modified can apply to other elements aswell.
+Similar to a program with impure functions, style sheets with of unscoped styles can have unexpected side-effects.
+For example, when we add or modify a rule with the intention to modify the visual appearance of a specific element of the \gls{dom}, the style change can apply to other elements as well.
 This so called `scope leak'\footnote{cf. \cite{mpgcss}} can occur in any \gls{html}-Document that references this very stylesheet.
-When the developer undertaking the changes is not aware of all applications of a specific rule, some of the visual changes are considered unforeseen.
-We now illustrate the given situation, initially presenting a visualisation of a hypthetical \gls{dom}:
+When the developer undertaking the changes is not aware of all applications of the rule he changes, some of resulting effects are to be considered unforeseen.
+
+The following drawing visualises the structrue of a hypothetical \gls{dom} :
 
 \begin{figure}[H]
   \centering
@@ -32,7 +34,7 @@ We now illustrate the given situation, initially presenting a visualisation of a
       ]
 \end{figure}
 
-The following rule was written with the intention to set the type of the label inside the form in bold weight:
+This rule was written with the intention to set the type of the label inside the form in bold weight:
 
 \lstset{language=CSS3,caption={Rule with side effects}}
 \begin{lstlisting}
@@ -42,11 +44,10 @@ label {
 \end{lstlisting}
 
 Applying these rules achieves the intended effect, but also changes the weight of the type the name of a team member is set in.
-The \verb ... signify an arbitrarly complex \gls{dom}-structure.
-While it is obvious to us here that the rule will set the name of an employee in bold type, it may not be in an actual project.
-Depending on the here omitted complexity and the tools at hand, of the \gls{dom}, the effort connected to locating the effects of a modification may be large.
-The cascade and specificity mechanism of \gls{css} adds some somplexity to possible side effects due to possible interactions between individual rules.
-We assume that in any stylesheet that the document references occurs the following, more specific, unscoped rule:
+The \verb ...  denote an arbitrarily complex part of the \gls{dom}.
+Depending on the complexity of the \gls{dom} and the tools at hand, the costs connected to locating the effects of a modification may be high.
+The cascade and specificity mechanism of \gls{css} may add some complexity to side effects because individual rules have the potential to interact with each other.
+We assume the presence of the following, more specific, unscoped rule:
 
 \lstset{language=CSS3,caption={Rule with non-generic specificity}}
 \begin{lstlisting}
@@ -55,13 +56,12 @@ We assume that in any stylesheet that the document references occurs the followi
 }
 \end{lstlisting}
 
-Now the \verb label -rule does not take effect, because the \verb .label -rule has a higher priority.\footnote{cf. \cite{w3conselectors}}
-To achieve the desired results, we need to undertake further modifications, e.g. increasing the specificity of the new rule, which again results in an increased complexity of the source code.
+Now the first rule does not take effect because the class selector of the second rule is more specific.\footnote{cf. \cite{w3conselectors}}
+To achieve the targeted visual appearance, further modifications are necessary, e.g. increasing the specificity of the new rule, which again results in an increased complexity of the source code.
 
-The risk of unforeseen side effects in the development of generally unscoped \gls{css} is increased with the complexity of the codebase and the number of both active and developers.
-Scope leaks increase the effort required to comprehend the source code, i.e. acquire and maintain knowledge of the system that enables a developer to modify it without unexpected side-effects while achieving the desired effect.
-Here we can draw a parallel between non-local rules and Wulf and Shaw's considerations of non-local variables as `a major contributing factor in programs which are difficult to understand' for similar reasons.\footnote{\cite{globalvariables} p.28}
-% dynamic web-applications
+The risk of unforeseen side effects in the development of generally unscoped \gls{css} is increased with the complexity of the codebase and the number of developers involved.
+Scope leaks increase the cost with comprehending the source code, i.e. to acquire and maintain knowledge of the system that enables a developer to modify it without unexpected side-effects while achieving the desired effect.
+We can draw a parallel between non-local rules and Wulf and Shaw's considerations of non-local variables as `a major contributing factor in programs which are difficult to understand' for similar reasons.\footnote{\cite{globalvariables} p.28}
 
-However, global or `base' styles are not inherently considered harmful.
-Their usage is suitable to provide representational consistency inside single aswell across multiple \gls{html} documents.\footnote{cf. \cite{mpgcss}}
+It remains to mention that global \gls{css}-rules have a valid use case as base styles.
+Base styles provide visual consistency across across multiple \gls{html} documents and use element selectors.\footnote{cf. \cite{mpgcss}}

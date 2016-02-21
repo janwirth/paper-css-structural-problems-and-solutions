@@ -1,21 +1,24 @@
 \chapter{Introduction}
 \label{ch:intro}
-The results of a poll on \gls{css} Preprocessors with 13 000 responses conducted in 2012 by online magazine CSS-Tricks display a significant preference of those who tried preprocessors towards them.\footnote{cf. \cite{preprocessorpoll}}
-The popularity of preprocessors can be considered as a symptom of insufficiency \gls{css} as a tool for modern web projects.
-Stylesheet size and structure do have little perceptible impact on both load time and rendering performance.\footnote{cf. \cite{soundersonselectorperformance}}\footnote{cf. \cite{atkinsondryscope}}
-Browser inconsistencies have a relatively straightforward solution, namely normalize- or reset-stylesheets.\footnote{cf. \cite{meyeronreset}}\footnote{cf. \cite{gallagheronnormalize}}
-Solutions to layout problems like collapsing margins or unexpected float behavior tend to be less straightforward, but are proven and undebatable.\footnote{cf. \cite{meyeronfloats}}\footnote{cf. \cite{meyeronmargins}}
-However, artifacts of the search for effective and efficient methods to structure \gls{css} Code dates back to 2003.\footnote{cf. \cite{methodmails}}
+In 2012 the online magazine CSS-Tricks conducted a poll on \gls{css} preprocessors.
+The summary of the 13000 responses given shows that most people that tried preprocessor syntax prefer it.\footnote{cf. \cite{preprocessorpoll}}
+We consider this as a symptom for language specific problems of vanilla (standard) \gls{css} that arise in the development of a modern web \gls{ui}.
 
-In the recent years several different practices or sets of practices to structure stylesheets have been promoted by widely recognized companies and individuals of the web development community.
-Among others, these include Yandex\footnote{cf. \cite{bem}}, Yahoo\footnote{cf. \cite{atomiccsssite}}.
-In defiance of the abundance of methods and `best practices', resources that provide comparative information based on thorough examination are scarce.
-We will approach common structural problems in the development of \gls{css} caused by the features, quirks and shortcomings of the language.
-Consecutively, we will examine selected practices promoted as solutions for these problems.
-We focus our analysis on CSS-only solutions but note relevant tools like preprocessors and template engines.
+The following issues were considered before setting the problem scope of this paper:
+Stylesheet size and structure do have little perceptible impact on both load time and rendering performance.\footnote{cf. \cite{soundersonselectorperformance}}\footnote{cf. \cite{atkinsondryscope}}
+Browser inconsistencies have a relatively straightforward solution, namely normalize or reset style sheets.\footnote{cf. \cite{meyeronreset}}\footnote{cf. \cite{gallagheronnormalize}}
+Solutions to layout problems like collapsing margins or unexpected float behavior tend to be less straightforward, but are rarely debated.\footnote{cf. \cite{meyeronfloats}}\footnote{cf. \cite{meyeronmargins}}
+Artifacts of the search for effective and efficient methods to structure \gls{css} can be observed back to the year.\footnote{cf. \cite{methodmails}}
+
+In the recent years several different practices and sets of practices to structure style sheets have been promoted by widely recognized companies and individuals of the web industry.
+Among others, those include Yandex\footnote{cf. \cite{bem}}, Yahoo\footnote{cf. \cite{atomiccsssite}}.
+In defiance of the abundance of recommended methods and promoted best practices, comparative information based on problem-orientend examination is scarce.
+We will analyse common structural problems of \gls{css}.
+Consecutively, we will examine solutions for those problems.
+We focus our analysis on vanilla CSS solutions but also note relevant tools like preprocessors and template engines.
 The aim of this paper is to provide comprehensible insight for frontend developers that want to challenge best practices.
 
-The following conventions are used in this paper:
-\verb ... signifies the presence of omitted code of arbitrary complexity.
-File names like \verb \\ \verb index.html in code excerpts name the following lines of code.
-Within an example the file \verb index.html references \verb style.css .
+We use following conventions in this paper:
+Three dots \verb ...  signify the presence of arbitrary structural complexity.
+In code example the document \verb index.html  references the stylesheet \verb style.css .
+Code comments in the format of  \verb|\\ index.html|  define which file the following lines of code belong to.

@@ -1,11 +1,12 @@
 \section{Violations of the \acrlong{dry} Principle}
-The \gls{dry} Principle was formulated in 2000 by Hunt and Thomas.
+\label{sec:dryviolations}
+The \gls{dry} Principle was enunciated in 2000 by Hunt and Thomas.
 It states that 
 `Every piece of knowledge must have a single, unambiguous, authoritative representation within a system.'\footnote{\cite{pragmaticprogrammer} p. 27}
-Common violations of the DRY principle in CSS are directly linked to the lack of variables.
-We consider the following excerpt we can observe what is most likely a violation of \gls{dry}
+Many violations of the DRY principle in CSS are directly linked to the lack of variables.
+In the following listing we can observe what is most likely a violation of \gls{dry}
 
-\lstset{language=CSS3,caption={Violation of DRY},label=excerpt:suitconvention}
+\lstset{language=CSS3,caption={Violation of DRY},label=listing:suitconvention}
 \begin{lstlisting}
 button {
   margin: 10px;
@@ -18,12 +19,12 @@ a {
 }
 \end{lstlisting}
 
-Assuming that the intention of the developer was to give both links and buttons the same margin, this piece of knowledge now has two authoritative representations.
-This decreasese maintenance.
-This is because, if the inherently singular piece of knowledge changes, the code has to be changed in more that one place.
+We assume that the intention of the developer was to give both links and buttons the same margin whose exact value is derived from a grid system.
+The singular piece of knowledge originating in the grid system now has two authoritative representations in the code.
+This lowers the maintainability because a single change of the grid dimensions results in two or more necessary of the code.
 Even automated tools like find and replace are prone to errors of their operators as the operation may require detailed knowledge of the target system.\footnote{cf. \cite{humanautomation} p.408}
-To exemplify this, we consider the following excerpt:
-\lstset{language=CSS3,caption={Violation of DRY},label=excerpt:suitconvention}
+To exemplify this, we consider the following listing:
+\lstset{language=CSS3,caption={Coincidental color definition overlap},label=listing:suitconvention}
 \begin{lstlisting}
 .important {
     background-color: red;
@@ -33,8 +34,8 @@ To exemplify this, we consider the following excerpt:
     background-color: red;
 }
 \end{lstlisting}
-Here, by coincidence, elements decorated with the classes \verb error and \verb important both are rendered with a background.
+Here, by coincidence, elements decorated with the classes \verb error  and \verb important  are both styled with red background.
 In common sense, information about an error is important, but not all important information is an error.
-This means, that the design requirements may change so that as the background of either classes is different.
-Now a simple find and replace operation on all occurences of \verb red with the intent to fulfill changed design requirements results in an unexpected side-effect.
-The bigger a project gets, the more likely are such coincidental overlaps that increase the cost of removing technical debt.
+This means that the two occurences of \verb red  may change independently because they actually mean different things.
+If this happens, a simple find and replace operation on all occurences of \verb red  with the intent to fulfill changed design requirements results in an unexpected side-effect.
+The bigger a project gets, the more likely are such coincidental overlaps.

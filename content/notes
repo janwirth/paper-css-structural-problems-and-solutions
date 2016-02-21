@@ -14,7 +14,7 @@ The methodologies Atomic CSS, SMACSS, Suit BEM, MPG, OOCSS and the edX CSS Style
 
 
 %%%%%%%%%%%%
-% These Methodologies usually covers naming conventions, categorization of rules with the aim of helping developers create both maintainable and scalable stylesheets.
+% These Methodologies usually covers naming conventions, categorization of rules with the aim of helping developers create both maintainable and scalable style sheets.
 % Software development methodologies aim to provide a structure to the development of software systems.
 % Build tools like CSS Preprocessors solve similar problems.
 % On one hand they also provide tools that may improve the speed of the development process with CSS methodologies.

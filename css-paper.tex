@@ -23,12 +23,12 @@
 	%\pagebreak
     
     % Code Listing Verzeichnis
-    %\lstlistoflistings
-    %\pagebreak
+    \lstlistoflistings
+    % \pagebreak
 	
 	% Tabellenverzeichnis
-	\listoftables
-	\pagebreak
+	% \listoftables
+	% \pagebreak
 
 	% Abkürzungsverzeichnis
 	%\addchap{List of Abbreviations}
@@ -50,9 +50,10 @@
 	
     \input{content/index}
 
-	\clearpage
+	% \clearpage
 	
-\addtocontents{toc}{\protect\newpage}
+  % add new page before appendix
+  % \addtocontents{toc}{\protect\newpage}
 	% Ab hier weiter mit großen, römischen Seitenzahlen
 	\pagenumbering{Roman}
 	
@@ -63,14 +64,14 @@
 	\ihead[\titel]{\titel}	
 	
 	% Anhang
-	\addchap{Anhang}
-	\appendix
-    \setcounter{table}{0}
-    \renewcommand{\thetable}{A\arabic{table}}
-	\input{content/meta/Anhang}
+	% \addchap{Anhang}
+	% \appendix
+  %   \setcounter{table}{0}
+  %   \renewcommand{\thetable}{A\arabic{table}}
+	% \input{content/meta/Anhang}
 	
 	% % Beigaben
-	\input{content/meta/Beigaben}
+	% \input{content/meta/Beigaben}
 	
 	% % Glossar, falls benötigt
 	\input{content/meta/Glossar}
