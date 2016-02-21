@@ -11,14 +11,15 @@ Solutions to layout problems like collapsing margins or unexpected float behavio
 Artifacts of the search for effective and efficient methods to structure \gls{css} can be observed back to the year.\footnote{cf. \cite{methodmails}}
 
 In the recent years several different practices and sets of practices to structure style sheets have been promoted by widely recognized companies and individuals of the web industry.
-Among others, those include Yandex\footnote{cf. \cite{bem}}, Yahoo\footnote{cf. \cite{atomiccsssite}}.
+Among others, those include Yandex\footnote{cf. \cite{bem}} and Yahoo\footnote{cf. \cite{atomiccsssite}}.
 In defiance of the abundance of recommended methods and promoted best practices, comparative information based on problem-orientend examination is scarce.
 We will analyse common structural problems of \gls{css}.
-Consecutively, we will examine solutions for those problems.
-We focus our analysis on vanilla CSS solutions but also note relevant tools like preprocessors and template engines.
+Consecutively, solutions for those problems will be examined.
+The scope is limited to vanilla CSS solutions but relevant tools like preprocessors and template engines are noted as well.
+This is because these tools are additional technologies that do not tackle the problems at their roots and are possibly limited in applicability.
 The aim of this paper is to provide comprehensible insight for frontend developers that want to challenge best practices.
 
-We use following conventions in this paper:
-Three dots \verb ...  signify the presence of arbitrary structural complexity.
-In code example the document \verb index.html  references the stylesheet \verb style.css .
+The following conventions are used in this paper:
+Three question marks \verb ??? signify the omission of an arbitrarily sized part of a listing or drawing.
+In code examples,  the document \verb index.html  has a reference to the stylesheet \verb style.css .
 Code comments in the format of  \verb|\\ index.html|  define which file the following lines of code belong to.

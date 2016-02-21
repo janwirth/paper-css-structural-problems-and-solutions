@@ -25,13 +25,14 @@ The following drawing visualises the structrue of a hypothetical \gls{dom} :
             [.span.label ]
           ]
         ]
-        [....
+        [???.
           [.div.team-member
             [.img ]
             [.label.name ]
           ]
         ]
       ]
+\caption{Example DOM tree}
 \end{figure}
 
 This rule was written with the intention to set the type of the label inside the form in bold weight:
@@ -44,7 +45,7 @@ label {
 \end{lstlisting}
 
 Applying these rules achieves the intended effect, but also changes the weight of the type the name of a team member is set in.
-The \verb ...  denote an arbitrarily complex part of the \gls{dom}.
+The \verb ???  denote an arbitrarily complex part of the \gls{dom}.
 Depending on the complexity of the \gls{dom} and the tools at hand, the costs connected to locating the effects of a modification may be high.
 The cascade and specificity mechanism of \gls{css} may add some complexity to side effects because individual rules have the potential to interact with each other.
 We assume the presence of the following, more specific, unscoped rule:
