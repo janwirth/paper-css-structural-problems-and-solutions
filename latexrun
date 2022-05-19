@@ -81,11 +81,16 @@ def main():
         help='Max number of times to run latex before giving up'
         ' (default: %(default)s)')
     arg_parser.add_argument(
-        '-W', metavar='(no-)CLASS',
-        action=ArgParserWarnAction, dest='nowarns', default=set(['underfull']),
+        '-W',
+        metavar='(no-)CLASS',
+        action=ArgParserWarnAction,
+        dest='nowarns',
+        default={'underfull'},
         help='Enable/disable warning from CLASS, which can be any package name, '
         'LaTeX warning class (e.g., font), bad box type '
-        '(underfull, overfull, loose, tight), or "all"')
+        '(underfull, overfull, loose, tight), or "all"',
+    )
+
     arg_parser.add_argument(
         '-O', metavar='DIR', dest='obj_dir', default='latex.out',
         help='Directory for intermediate files and control database '
@@ -174,11 +179,14 @@ def main():
             status = max(task.report(), status)
 
         if not stable:
-            print('error: files are still changing after {} iterations; giving up'
-                  .format(args.max_iterations), file=sys.stderr)
+            print(
+                f'error: files are still changing after {args.max_iterations} iterations; giving up',
+                file=sys.stderr,
+            )
+
             status = max(status, 1)
     except TaskError as e:
-        print(str(e), file=sys.stderr)
+        print(e, file=sys.stderr)
         debug_exc()
         status = 1
 
@@ -193,7 +201,7 @@ def main():
                 output = 'output'
         if Message._color:
             terminfo.send('bold', ('setaf', 1))
-        print('{}; {} not updated'.format(fstatus, output))
+        print(f'{fstatus}; {output} not updated')
         if Message._color:
             terminfo.send('sgr0')
     sys.exit(status)
@@ -220,11 +228,11 @@ def verbose_cmd(args, cwd=None, env=None):
     if verbose_cmd.enabled:
         cmd = ' '.join(map(shlex.quote, args))
         if cwd is not None:
-            cmd = '(cd {} && {})'.format(shlex.quote(cwd), cmd)
+            cmd = f'(cd {shlex.quote(cwd)} && {cmd})'
         if env is not None:
             for k, v in env.items():
                 if os.environ.get(k) != v:
-                    cmd = '{}={} {}'.format(k, shlex.quote(v), cmd)
+                    cmd = f'{k}={shlex.quote(v)} {cmd}'
         print(cmd, file=sys.stderr)
 verbose_cmd.enabled = False
 
@@ -232,9 +240,8 @@ def mkdir_p(path):
     try:
         os.makedirs(path)
     except OSError as exc:
-        if exc.errno == errno.EEXIST and os.path.isdir(path):
-            pass
-        else: raise
+        if exc.errno != errno.EEXIST or not os.path.isdir(path):
+            raise
 
 class DB:
     """A latexrun control database."""
@@ -250,7 +257,7 @@ class DB:
 
         # Lock the database if possible. We don't release this lock
         # until the process exits.
-        lockpath = self.__filename + '.lock'
+        lockpath = f'{self.__filename}.lock'
         if fcntl is not None:
             lockfd = os.open(lockpath, os.O_CREAT|os.O_WRONLY|os.O_CLOEXEC, 0o666)
             # Note that this is actually an fcntl lock, not a lockf
@@ -274,7 +281,7 @@ class DB:
     def commit(self):
         debug('committing database')
         # Atomically commit database
-        tmp_filename = self.__filename + '.tmp'
+        tmp_filename = f'{self.__filename}.tmp'
         with open(tmp_filename, 'w') as fp:
             json.dump(self.__val, fp, indent=2, separators=(',', ': '))
             fp.flush()
@@ -313,8 +320,7 @@ class DB:
                     hash_cache.invalidate(f)
                     os.unlink(f)
                 else:
-                    print('warning: {} has changed; not removing'.format(f),
-                          file=sys.stderr)
+                    print(f'warning: {f} has changed; not removing', file=sys.stderr)
         self.__val = {'version': DB._VERSION}
         try:
             os.unlink(self.__filename)
@@ -441,9 +447,9 @@ class Progress:
     def update(self, msg):
         if not Progress._enabled:
             return
-        out = '[' + self.__prefix + ']'
+        out = f'[{self.__prefix}]'
         if msg:
-            out += ' ' + msg
+            out += f' {msg}'
         if out != self.last:
             # Beginning of line, clear line, disable wrap
             terminfo.send('cr', 'el', 'rmam')
@@ -457,14 +463,11 @@ class Message(collections.namedtuple(
         'Message', 'typ filename lineno msg')):
     def emit(self):
         if self.filename:
-            if self.filename.startswith('./'):
-                finfo = self.filename[2:]
-            else:
-                finfo = self.filename
+            finfo = self.filename[2:] if self.filename.startswith('./') else self.filename
         else:
             finfo = '<no file>'
         if self.lineno is not None:
-            finfo += ':' + str(self.lineno)
+            finfo += f':{str(self.lineno)}'
         finfo += ': '
         if self._color:
             terminfo.send('bold')
@@ -473,7 +476,7 @@ class Message(collections.namedtuple(
         if self.typ != 'info':
             if self._color:
                 terminfo.send(('setaf', 5 if self.typ == 'warning' else 1))
-            sys.stdout.write(self.typ + ': ')
+            sys.stdout.write(f'{self.typ}: ')
         if self._color:
             terminfo.send('sgr0')
         sys.stdout.write(self.msg + '\n')
@@ -513,7 +516,7 @@ def run_tasks(tasks, max_iterations):
     terminate_task_loop = False
 
     nstable = 0
-    for iteration in range(max_iterations):
+    for _ in range(max_iterations):
         for task in tasks:
             if task.stable():
                 nstable += 1
@@ -577,11 +580,11 @@ class Task:
         """
         for dep in summary['deps']:
             fn, args, val = dep
-            method = getattr(self, '_input_' + fn, None)
+            method = getattr(self, f'_input_{fn}', None)
             if method is None:
-                return 'unknown dependency method {}'.format(fn)
+                return f'unknown dependency method {fn}'
             if method == self._input_unstable or method(*args) != val:
-                return '{}{}'.format(fn, tuple(args))
+                return f'{fn}{tuple(args)}'
         return None
 
     def _input(self, name, *args):
@@ -594,7 +597,7 @@ class Task:
 
         Both args and the return value must be JSON serializable.
         """
-        method = getattr(self, '_input_' + name)
+        method = getattr(self, f'_input_{name}')
         val = method(*args)
         if [name, args, val] not in self.__deps:
             self.__deps.append([name, args, val])
@@ -641,8 +644,9 @@ class Task:
         try:
             self.__db.commit()
         except OSError as e:
-            raise TaskError('error committing control database {}: {}'.format(
-                getattr(e, 'filename', '<unknown path>'), e)) from e
+            raise TaskError(
+                f"error committing control database {getattr(e, 'filename', '<unknown path>')}: {e}"
+            ) from e
 
     def __make_summary(self, deps, run_result):
         """Construct a new task summary."""
@@ -724,7 +728,7 @@ def normalize_input_path(path):
 
 class LaTeX(Task):
     def __init__(self, db, tex_filename, cmd, cmd_args, obj_dir, nowarns):
-        super().__init__(db, 'latex::' + normalize_input_path(tex_filename))
+        super().__init__(db, f'latex::{normalize_input_path(tex_filename)}')
         self.__tex_filename = tex_filename
         self.__cmd = cmd
         self.__cmd_args = cmd_args
@@ -738,7 +742,7 @@ class LaTeX(Task):
         # treats specially, then tweak it so it doesn't.
         filename = self.__tex_filename
         if filename.startswith(('-', '&', '\\')):
-            filename = './' + filename
+            filename = f'./{filename}'
         # XXX Put these at the beginning in case the provided
         # arguments are malformed.  Might want to do a best-effort
         # check for incompatible user-provided arguments (note:
@@ -756,8 +760,7 @@ class LaTeX(Task):
         try:
             os.makedirs(self.__obj_dir, exist_ok=True)
         except OSError as e:
-            raise TaskError('failed to create %s: ' % self.__obj_dir + str(e)) \
-                from e
+            raise TaskError(f'failed to create {self.__obj_dir}: ' + str(e)) from e
         try:
             verbose_cmd(args)
             p = subprocess.Popen(args,
@@ -767,7 +770,7 @@ class LaTeX(Task):
             stdout, has_errors, missing_includes = self.__feed_terminal(p.stdout)
             status = p.wait()
         except OSError as e:
-            raise TaskError('failed to execute latex task: ' + str(e)) from e
+            raise TaskError(f'failed to execute latex task: {str(e)}') from e
 
         # Register environment variable inputs
         for env_var in ['TEXMFOUTPUT', 'TEXINPUTS', 'TEXFORMATS', 'TEXPOOL',
@@ -823,7 +826,7 @@ class LaTeX(Task):
     def __feed_terminal(self, stdout):
         prefix = 'latex'
         if self.__pass > 1:
-            prefix += ' ({})'.format(self.__pass)
+            prefix += f' ({self.__pass})'
         with Progress(prefix) as progress:
             buf = []
             filt = LaTeXFilter()
@@ -837,8 +840,7 @@ class LaTeX(Task):
                 data = data.decode('ascii', errors='surrogateescape')
                 buf.append(data)
                 filt.feed(data)
-                file_stack = filt.get_file_stack()
-                if file_stack:
+                if file_stack := filt.get_file_stack():
                     tos = file_stack[-1]
                     if tos.startswith('./'):
                         tos = tos[2:]
@@ -879,8 +881,9 @@ class LaTeX(Task):
 
         # LuaTeX (0.76.0) doesn't include the output directory in the
         # logged transcript or output file name.
-        if os.path.basename(jobname) == jobname and \
-           os.path.exists(os.path.join(self.__obj_dir, jobname + '.log')):
+        if os.path.basename(jobname) == jobname and os.path.exists(
+            os.path.join(self.__obj_dir, f'{jobname}.log')
+        ):
             jobname = os.path.join(self.__obj_dir, jobname)
             if outname is not None:
                 outname = os.path.join(self.__obj_dir, outname)
@@ -899,12 +902,11 @@ class LaTeX(Task):
         # run won't depend on the .bbl file!  But maybe the .aux file
         # will always cause a re-run, at which point the .bbl will
         # exist?
-        filename = jobname + '.fls'
+        filename = f'{jobname}.fls'
         try:
             recorder = open(filename)
         except OSError as e:
-            raise TaskError('failed to open file recorder output: ' + str(e)) \
-                from e
+            raise TaskError(f'failed to open file recorder output: {str(e)}') from e
         pwd, inputs, outputs = '', set(), set()
         for linenum, line in enumerate(recorder):
             parts = line.rstrip('\n').split(' ', 1)
@@ -921,8 +923,7 @@ class LaTeX(Task):
                 else:
                     outputs.add(path)
             else:
-                raise TaskError('syntax error on line {} of {}'
-                                .format(linenum, filename))
+                raise TaskError(f'syntax error on line {linenum} of {filename}')
         # Ironically, latex omits the .fls file itself
         outputs.add(filename)
         return inputs, outputs
@@ -933,13 +934,12 @@ class LaTeX(Task):
         # subdirectories of the output directory that don't exist.
         # Detect this, create the output directory, and re-run.
         m = re.search('^! I can\'t write on file `(.*)\'\\.$', stdout, re.M)
-        if m and m.group(1).find('/') > 0 and '../' not in m.group(1):
-            debug('considering creating output sub-directory for {}'.
-                  format(m.group(1)))
-            subdir = os.path.dirname(m.group(1))
+        if m and m[1].find('/') > 0 and '../' not in m[1]:
+            debug(f'considering creating output sub-directory for {m[1]}')
+            subdir = os.path.dirname(m[1])
             newdir = os.path.join(self.__obj_dir, subdir)
             if os.path.isdir(subdir) and not os.path.isdir(newdir):
-                debug('creating output subdirectory {}'.format(newdir))
+                debug(f'creating output subdirectory {newdir}')
                 try:
                     mkdir_p(newdir)
                 except OSError as e:
@@ -1041,10 +1041,10 @@ class LaTeXCommit(Task):
                 open(outname, 'r+b').close()
             else:
                 debug('commiting {} to {}', outname, commit)
-                shutil.copy(outname, outname + '~')
-                os.rename(outname + '~', commit)
+                shutil.copy(outname, f'{outname}~')
+                os.rename(f'{outname}~', commit)
         except OSError as e:
-            raise TaskError('error committing latex output: {}'.format(e)) from e
+            raise TaskError(f'error committing latex output: {e}') from e
         self._input('file', outname)
         self.status = None
         return RunResult([commit], None)
@@ -1092,9 +1092,13 @@ class LaTeXFilter:
             msgs = ['%d %s warning%s' % (count, cls, "s" if count > 1 else "")
                     for cls, count in self.__suppress.items() if count]
             if msgs:
-                self.__message('info', None,
-                               '%s not shown (use -Wall to show them)' %
-                               ', '.join(msgs), filename=self.__first_file)
+                self.__message(
+                    'info',
+                    None,
+                    f"{', '.join(msgs)} not shown (use -Wall to show them)",
+                    filename=self.__first_file,
+                )
+
 
         if eof and len(self.__file_stack) and not self.__fatal_error:
             # Fatal errors generally cause TeX to "succumb" without
@@ -1180,7 +1184,8 @@ class LaTeXFilter:
             # We check for >=80 because a bug in LuaTeX causes it to
             # wrap at 80 columns instead of 79 (LuaTeX #900).
             while self.__lend - self.__lstart >= 80:
-                if self.TRACE: print('<{}> wrapping'.format(self.__pos))
+                if self.TRACE:
+                    print(f'<{self.__pos}> wrapping')
                 self.__ensure_line()
                 data = data[:-1] + self.__data[self.__pos:self.__lend]
                 self.__pos = self.__lend
@@ -1277,14 +1282,14 @@ class LaTeXFilter:
             if first:
                 self.__first_file = filename
             if self.TRACE:
-                print('<{}>{}enter {}'.format(
-                    m.start(), ' '*len(self.__file_stack), filename))
+                print(f"<{m.start()}>{' ' * len(self.__file_stack)}enter {filename}")
         elif ch == ')':
             if len(self.__file_stack):
                 if self.TRACE:
-                    print('<{}>{}exit {}'.format(
-                        m.start(), ' '*len(self.__file_stack),
-                        self.__file_stack[-1]))
+                    print(
+                        f"<{m.start()}>{' ' * len(self.__file_stack)}exit {self.__file_stack[-1]}"
+                    )
+
                 self.__file_stack.pop()
             else:
                 self.__message('warning', None,
@@ -1375,12 +1380,16 @@ class LaTeXFilter:
             else:
                 # If we haven't found the context, skip the line.
                 self.__skip_line()
-        stack_msg = ''
-        for i, trace in enumerate(stack):
-            stack_msg += ('\n         ' + (' ' * trace) + '^'
-                          if isinstance(trace, int) else
-                          '\n      at ' + trace.rstrip() if i == 0 else
-                          '\n    from ' + trace.rstrip())
+        stack_msg = ''.join(
+            (
+                '\n         ' + (' ' * trace) + '^'
+                if isinstance(trace, int)
+                else '\n      at ' + trace.rstrip()
+                if i == 0
+                else '\n    from ' + trace.rstrip()
+            )
+            for i, trace in enumerate(stack)
+        )
 
         if is_fatal_error:
             # fatal_error always prints one additional line of message
@@ -1447,7 +1456,7 @@ class LaTeXFilter:
             # name, which will start with a \.
             if 'hbox' in msg and self.__lookingat('\\'):
                 self.__consume_line(unwrap=True)
-        msg = self.__simplify_message(msg) + ' (page {})'.format(self.__pageno)
+        msg = self.__simplify_message(msg) + f' (page {self.__pageno})'
         cls = msg.split(None, 1)[0].lower()
         self.__message('warning', lineno, msg, cls=cls)
 
@@ -1456,10 +1465,8 @@ class LaTeXFilter:
         # called by \{Package,Class}Warning and \@latex@warning),
         # warnings produced by pdftex_warn, and other random warnings.
         msg, cls = self.__generic_info()
-        # Most warnings include an input line emitted by \on@line
-        m = re.search(' on input line ([0-9]+)', msg)
-        if m:
-            lineno = int(m.group(1))
+        if m := re.search(' on input line ([0-9]+)', msg):
+            lineno = int(m[1])
             msg = msg[:m.start()]
         else:
             lineno = None
@@ -1473,13 +1480,13 @@ class LaTeXFilter:
         # Package and class messages are continued with lines
         # containing '(package name)            '
         pkg_name = msg.split(' ', 2)[1]
-        prefix = '(' + pkg_name + ')            '
+        prefix = f'({pkg_name})            '
         while self.__lookingat(prefix):
             # Collect extra lines.  It's important that we keep these
             # because they may contain context information like line
             # numbers.
             extra = self.__consume_line(unwrap=True)
-            msg += ' ' + extra[len(prefix):].strip()
+            msg += f' {extra[len(prefix):].strip()}'
         return msg, pkg_name.lower()
 
 ##################################################################
@@ -1488,8 +1495,10 @@ class LaTeXFilter:
 
 class BibTeX(Task):
     def __init__(self, db, latex_task, cmd, cmd_args, nowarns, obj_dir):
-        super().__init__(db, 'bibtex::' + normalize_input_path(
-            latex_task.get_tex_filename()))
+        super().__init__(
+            db, f'bibtex::{normalize_input_path(latex_task.get_tex_filename())}'
+        )
+
         self.__latex_task = latex_task
         self.__cmd = cmd
         self.__cmd_args = cmd_args
@@ -1502,12 +1511,12 @@ class BibTeX(Task):
         if jobname is None:
             # We don't know where the .aux file is until latex has run
             return True
-        if not os.path.exists(jobname + '.aux'):
+        if not os.path.exists(f'{jobname}.aux'):
             # Input isn't ready, so bibtex will simply fail without
             # affecting system state.  Hence, this task is trivially
             # stable.
             return True
-        if not self.__find_bib_cmds(os.path.dirname(jobname), jobname + '.aux'):
+        if not self.__find_bib_cmds(os.path.dirname(jobname), f'{jobname}.aux'):
             # The tex file doesn't refer to any bibliographic data, so
             # don't run bibtex.
             return True
@@ -1515,7 +1524,7 @@ class BibTeX(Task):
         return super().stable()
 
     def __find_bib_cmds(self, basedir, auxname, stack=()):
-        debug('scanning for bib commands in {}'.format(auxname))
+        debug(f'scanning for bib commands in {auxname}')
         if auxname in stack:
             raise TaskError('.aux file loop')
         stack = stack + (auxname,)
@@ -1533,20 +1542,16 @@ class BibTeX(Task):
             # biber citation
             return True
 
-        # Recurse into included aux files (see aux_input_command), in
-        # case \bibliography appears in an \included file.
-        for m in re.finditer(r'^\\@input\{([^}]*)\}', aux_data, flags=re.M):
-            if self.__find_bib_cmds(basedir, os.path.join(basedir, m.group(1)),
-                                    stack):
-                return True
-
-        return False
+        return any(
+            self.__find_bib_cmds(basedir, os.path.join(basedir, m.group(1)), stack)
+            for m in re.finditer(r'^\\@input\{([^}]*)\}', aux_data, flags=re.M)
+        )
 
     def _input_args(self):
         if self.__is_biber():
             aux_name = os.path.basename(self.__latex_task.get_jobname())
         else:
-            aux_name = os.path.basename(self.__latex_task.get_jobname()) + '.aux'
+            aux_name = f'{os.path.basename(self.__latex_task.get_jobname())}.aux'
         return [self.__cmd] + self.__cmd_args + [aux_name]
 
     def _input_cwd(self):
@@ -1572,10 +1577,7 @@ class BibTeX(Task):
             return None
 
     def __path_join(self, first, rest):
-        if rest is None:
-            # Append ':' to keep the default search path
-            return first + ':'
-        return first + ':' + rest
+        return f'{first}:' if rest is None else f'{first}:{rest}'
 
     def __is_biber(self):
         return "biber" in self.__cmd
@@ -1609,7 +1611,7 @@ class BibTeX(Task):
             stdout = self.__feed_terminal(p.stdout)
             status = p.wait()
         except OSError as e:
-            raise TaskError('failed to execute bibtex task: ' + str(e)) from e
+            raise TaskError(f'failed to execute bibtex task: {str(e)}') from e
 
         inputs, auxnames, outbase = self.__parse_inputs(stdout, cwd, env)
         if not inputs and not auxnames:
@@ -1629,7 +1631,7 @@ class BibTeX(Task):
 
         if self.__is_biber():
             outbase = os.path.join(cwd, outbase)
-        outputs = [outbase + '.bbl', outbase + '.blg']
+        outputs = [f'{outbase}.bbl', f'{outbase}.blg']
         return RunResult(outputs, {'outbase': outbase, 'status': status,
                                    'inputs': inputs})
 
@@ -1666,18 +1668,20 @@ class BibTeX(Task):
         auxnames = []
         outbase = None
         for line in log.splitlines():
-            m = re.match('(?:The top-level auxiliary file:'
-                         '|A level-[0-9]+ auxiliary file:) (.*)', line)
-            if m:
-                auxnames.append(os.path.join(cwd, m.group(1)))
+            if m := re.match(
+                '(?:The top-level auxiliary file:'
+                '|A level-[0-9]+ auxiliary file:) (.*)',
+                line,
+            ):
+                auxnames.append(os.path.join(cwd, m[1]))
                 continue
-            m = re.match('(?:(The style file:)|(Database file #[0-9]+:)) (.*)',
-                         line)
-            if m:
-                filename = m.group(3)
-                if m.group(1):
+            if m := re.match(
+                '(?:(The style file:)|(Database file #[0-9]+:)) (.*)', line
+            ):
+                filename = m[3]
+                if m[1]:
                     filename = kpathsea.find_file(filename, 'bst', cwd, env)
-                elif m.group(2):
+                elif m[2]:
                     filename = kpathsea.find_file(filename, 'bib', cwd, env)
 
                 # If this path is relative to the source directory,
@@ -1690,16 +1694,12 @@ class BibTeX(Task):
 
                 inputs.append(filename)
 
-            # biber output
-            m = re.search("Found BibTeX data source '(.*?)'",
-                         line)
-            if m:
-                filename = m.group(1)
+            if m := re.search("Found BibTeX data source '(.*?)'", line):
+                filename = m[1]
                 inputs.append(filename)
 
-            m = re.search("Logfile is '(.*?)'", line)
-            if m:
-                outbase = m.group(1)[:-4]
+            if m := re.search("Logfile is '(.*?)'", line):
+                outbase = m[1][:-4]
 
         if outbase is None:
             outbase = auxnames[0][:-4]
@@ -1877,10 +1877,8 @@ class BibTeXKeyParser:
                 continue
             closing, key_re = {'{' : ('}', '([^, \t\n}]*)'),
                                '(' : (')', '([^, \t\n]*)')}[self.__m.group(1)]
-            if typ not in ('preamble', 'string'):
-                # Regular entry; get key
-                if self.__consume(key_re):
-                    yield self.__m.group(1), self.__lineno()
+            if typ not in ('preamble', 'string') and self.__consume(key_re):
+                yield self.__m.group(1), self.__lineno()
             # Consume body of entry
             self.__pos = start
             self.__balanced(closing)
@@ -1903,7 +1901,7 @@ class BibTeXKeyParser:
             if not m:
                 break
             self.__pos = m.end()
-            ch = m.group(0)
+            ch = m[0]
             if level == 0 and ch == closing:
                 break
             elif ch == '{':
